@@ -1,2 +1,18 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Amount</th>
+  </tr>
+
+  {{#each obj}}
+    <tr>
+    	<td>{{this.name}}</td>
+    	<td>{{this.amount}}</td>
+    </tr>
+  {{/each}}
+
+</table>
+
+<a href = "/sales">sales</a> | <a href = "/payment">payment</a>
