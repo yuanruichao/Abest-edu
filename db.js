@@ -8,7 +8,8 @@ var mongoose = require('mongoose'),
 
 var Student = new mongoose.Schema({
 	name: String,
-	amount: Number
+	amount: Number,
+	status: String
 });
 
 var User = new mongoose.Schema({

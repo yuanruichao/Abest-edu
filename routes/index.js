@@ -11,11 +11,15 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/sales', function(req, res, next) {
-  res.render('sales');
+	Student.find(function(err, stu, count){
+		res.render('sales', { obj: stu });
+	});
 });
 
 router.get('/payment', function(req, res, next) {
-  res.render('payment');
+	Student.find(function(err, stu, count){
+		res.render('payment', { obj: stu });
+	});
 });
 
 module.exports = router;
