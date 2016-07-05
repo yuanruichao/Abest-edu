@@ -5,12 +5,29 @@ var mongoose = require('mongoose');
 var Student = mongoose.model('Student');
 
 var nodemailer = require('nodemailer');
-/* GET home page. */
+//var smtpConfig = require('../config/smtpConfig.js').smtpConfig;
 
 router.post('/sales', function(req, res, next) {
 	console.log('within post /sales');
+
+	var transporter = nodemailer.createTransport(smtpConfig);
+
+	var email_subject  = req.body.name + " pending " + req.body.amount;
+	var email_body = req.body.name + " pending " + req.body.amount;
+	var mailData = {
+	    from: 'alert@abest-edu.com',
+	    to: 'alert@abest-edu.com',
+	    subject: email_subject,
+	    text: email_body,
+	};
+
+	transporter.sendMail(mailData, function(err, info){
+		console.log("err = ", err);
+		console.log("info = ", info);
+	});
+
 	Student.findOne({name: req.body.name}, function(err, stu) {
-		console.log(stu);
+		console.log("stu = ", stu);
 		if(stu == null){
 			var s = new Student({
 				name: req.body.name,
@@ -25,7 +42,7 @@ router.post('/sales', function(req, res, next) {
 			var tmpa = parseInt(stu.amount);
 			Student.update({name: req.body.name}, {
 													amount: tmpa - parseInt(req.body.amount),
-													status: "Waiting " + req.body.amount},
+													status: "Waiting " + (- tmpa + parseInt(req.body.amount))},
 												function(err){
 													res.redirect('/');
 												});
@@ -37,6 +54,22 @@ router.post('/sales', function(req, res, next) {
 router.post('/payment', function(req, res, next) {
 	console.log('within post /payment');
 	
+	var transporter = nodemailer.createTransport(smtpConfig);
+
+	var email_subject  = req.body.name + " received " + req.body.amount;
+	var email_body = req.body.name + " received " + req.body.amount;
+	var mailData = {
+	    from: 'alert@abest-edu.com',
+	    to: 'alert@abest-edu.com',
+	    subject: email_subject,
+	    text: email_body,
+	};
+
+	transporter.sendMail(mailData, function(err, info){
+		console.log("err = ", err);
+		console.log("info = ", info);
+	});
+
 	Student.findOne({name: req.body.name}, function(err, stu) {
 		console.log(stu);
 		var tmpa = parseInt(stu.amount); 
