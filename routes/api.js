@@ -5,13 +5,14 @@ var mongoose = require('mongoose');
 var Student = mongoose.model('Student');
 
 var nodemailer = require('nodemailer');
+var smtpTransport = require("nodemailer-smtp-transport")
 //var smtpConfig = require('../config/smtpConfig.js').smtpConfig;
 var smtpConfig = process.env.smtpConfig;
 
 router.post('/sales', function(req, res, next) {
 	console.log('within post /sales');
 
-	var transporter = nodemailer.createTransport(smtpConfig);
+	var transporter = nodemailer.createTransport(smtpTransport(smtpConfig));
 
 	var email_subject  = req.body.name + " pending " + req.body.amount;
 	var email_body = req.body.name + " pending " + req.body.amount;
