@@ -41,7 +41,14 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-console.log(process.env.smtpConfig);
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
+
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -55,13 +62,6 @@ if (app.get('env') === 'development') {
 }
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
 
 
 module.exports = app;
