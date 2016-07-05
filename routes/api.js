@@ -6,6 +6,7 @@ var Student = mongoose.model('Student');
 
 var nodemailer = require('nodemailer');
 //var smtpConfig = require('../config/smtpConfig.js').smtpConfig;
+var smtpConfig = process.env.smtpConfig;
 
 router.post('/sales', function(req, res, next) {
 	console.log('within post /sales');
