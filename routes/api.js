@@ -11,8 +11,8 @@ var smtpConfig = process.env.smtpConfig;
 
 router.post('/sales', function(req, res, next) {
 	console.log('within post /sales');
-
-	var transporter = nodemailer.createTransport(smtpTransport(smtpConfig));
+	console.log(smtpConfig);
+	var transporter = nodemailer.createTransport(smtpConfig);
 
 	var email_subject  = req.body.name + " pending " + req.body.amount;
 	var email_body = req.body.name + " pending " + req.body.amount;
