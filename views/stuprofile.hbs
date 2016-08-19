@@ -294,7 +294,7 @@ h2 {
 					<h4>Student Info</h4>
 				</div>
 				<div class = "modal-body">
-					School List: <input value = "{{obj.SchList.Schools}}" name="Schools" type = "text"><br><br>
+					School List: <input value = "{{#each obj.SchList}}{{this.Schools}}{{/each}}" name="Schools" type = "text"><br><br>
 				</div>
 				<div class = "modal-footer">
 					<button type = "submit">Create</button>	
@@ -315,7 +315,8 @@ h2 {
 				</div>
 				<div class = "modal-body">
 					{{#each obj.Results}}
-					{{this.SchName}}:<input value = "{{this.Result}}" name="{{this.SchName}}_Result" type = "text"><br><br>
+					<input value = "{{this.SchName}}" name="SchName" type = "hidden"></input>
+					{{this.SchName}}:<input value = "{{this.Result}}" name="Result" type = "text"><br><br>
 					{{/each}}
 				</div>
 				<div class = "modal-footer">

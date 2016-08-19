@@ -233,7 +233,7 @@ var changestatus = function(req, res, slug){
 				if(err) res.render("error", {message : "Update Error", error : err});
 				else res.redirect(303, '/stu/' + slug);
 			});
-			else if(stu.Result == null) Student.update({slug: slug},{Status: "Result"},function(err){
+			else if(stu.Results == null) Student.update({slug: slug},{Status: "Result"},function(err){
 				if(err) res.render("error", {message : "Update Error", error : err});
 				else res.redirect(303, '/stu/' + slug);
 			});
