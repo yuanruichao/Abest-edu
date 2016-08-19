@@ -1,20 +1,8 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap-table.css">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-table.js"></script>
 
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Amount</th>
-    <th>Status</th>
-  </tr>
-
-  {{#each obj}}
-    <tr>
-    	<td>{{this.name}}</td>
-    	<td>{{this.amount}}</td>
-      <td>{{this.status}}</td>
-    </tr>
-  {{/each}}
-
-</table>
-
-<a href = "/sales">sales</a> | <a href = "/payment">payment</a>

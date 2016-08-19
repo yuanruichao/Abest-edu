@@ -22,4 +22,22 @@ router.get('/payment', function(req, res, next) {
 	});
 });
 
+router.get('/allstudents', function(req, res, next) {
+	Student.find(function(err, stu, count){
+		res.render('allstudents', { obj: stu });
+	});
+});
+
+router.get('/stu/:slug', function(req, res, next) {
+	var slug = req.params.slug;
+	console.log(slug);
+	Student.findOne({slug : slug}, function(err, stu, count) {
+		if (stu == null) {
+			console.log("not found stu");
+			res.render('error', {message: "Student not found"});
+		}
+		else res.render('stuprofile', {obj: stu, slug: slug, user: req.user});	
+  	});
+});
+
 module.exports = router;

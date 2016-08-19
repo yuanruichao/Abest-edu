@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap-table.css">
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-table.js"></script>
 <h1>Sales</h1>
 <div class = "panel panel-default" style = "width:70%">
 	<div class = "panel-heading"></div>
 	<div class = "panel-body">
-		<table class = "table">
+		<table class = "table table-striped" id = "paytable" data-toggle = "table" data-search = "true" data-click-to-select = "true" data-select-item-name = "toolbar1" data-sort-order = "asc">
 			<thead>
 			<tr>
 	    		<th>Name</th>
@@ -17,9 +19,9 @@
 	  		<tbody>
 	  		{{#each obj}}
 	    		<tr>
-	    			<td>{{this.name}}</td>
-	    			<td>{{this.amount}}</td>
-	    			<td>{{this.status}}</td>
+	    			<td>{{this.Name}}</td>
+	    			<td>{{this.Amount}}</td>
+	    			<td>{{this.Atatus}}</td>
 	    		</tr>
 	  		{{/each}}
 	  		</tbody>
@@ -30,7 +32,7 @@
 <div class = "modal" id = "addstu">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
-			<form method="POST" action="/api/sales">
+			<form method="POST" action="/api/newstu">
 				<div class = "modal-header">
 					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
 					<h4>Add a Student</h4>
@@ -57,5 +59,5 @@ var showmodal = function(){
 	table.modal('show');
 }
 
-</script
+</script>
 
