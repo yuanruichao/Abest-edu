@@ -30,7 +30,7 @@ h2 {
 &nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
 <h2><small id = "Done">Done</small></h2>
 &nbsp;////&nbsp;
-<h2><small id = "Cancel">Cancel</small></h2>
+<h2><small id = "Declined">Declined</small></h2>
 <br>
 <br>
 <div class="row">
@@ -166,11 +166,11 @@ h2 {
 <div class="row">
 	<div class="col-md-12">
 		<div class = "panel panel-default">
-			<div class = "panel-heading">Cancel<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Cancel_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Cancel').hide();$('#Cancel2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Cancel').show();$('#Cancel2').hide();"></span></div></div>
+			<div class = "panel-heading">Cancel<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Cancel_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Cancel').hide();$('#CancelDiv').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Cancel').show();$('#CancelDiv').hide();"></span></div></div>
 			<div class = "panel-body">
-				<p onclick = "$('#Cancel').hide();$('#Cancel2').show();" style = "display:none;text-align: center;" id = "Cancel">Click to Show</p>
-				<p id = "Cancel2">
-					{{obj.Cancel}}
+				<p onclick = "$('#Cancel').hide();$('#CancelDiv').show();" style = "display:none;text-align: center;" id = "Cancel">Click to Show</p>
+				<p id = "CancelDiv">
+					{{obj.DeclinedReason}}
 				</p>
 			</div>	
 		</div>
@@ -370,14 +370,14 @@ h2 {
 <div class = "modal" id = "Cancel_modal">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
-			<form method="POST" action="/api/Cancel">
+			<form method="POST" action="/api/Decline">
 				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
 				<div class = "modal-header">
 					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
 					<h4>Student Info</h4>
 				</div>
 				<div class = "modal-body">
-					Cancel: <input value = "{{obj.Cancel}}" name="Cancel" type = "text"><br><br>
+					Reason: <input value = "{{obj.DeclinedReason}}" name="DeclinedReason" type = "text"><br><br>
 				</div>
 				<div class = "modal-footer">
 					<button type = "submit">Create</button>	

@@ -12,7 +12,7 @@
 			<thead>
 			<tr>
 	    		<th>Name</th>
-	    		<th>Status</th>
+<!-- 	    		<th>Status</th>
 	    		<th>CurYear</th>
 				<th>CurSchool</th>
 				<th>CurSystem</th>
@@ -23,9 +23,13 @@
 				<th>StuSource</th>
 				<th>EtrTime</th>
 				<th>TarCountry</th>
-				<th>TarSchType</th>
-				<th>TarSchYear</th>
-				<th>TarSchSeason</th>
+				<th>TarSchType</th> -->
+				<th>Status</th>
+				<th>Target School Year/Season</th>
+				<th>外籍顾问</th>
+				<th>策略顾问</th> 
+				<th>文书顾问</th>
+				<th>流程顾问</th>
 	  		</tr>
 	  		</thead>
 	  		<tbody>
@@ -33,19 +37,11 @@
     		<tr>
     			<td><a href = "/stu/{{this.slug}}">{{this.Name}}</a></td>
     			<td>{{this.Status}}</td>
-    			<td>{{this.StuInfo.CurYear}}</td>
-				<td>{{this.StuInfo.CurSchool}}</td>
-				<td>{{this.StuInfo.CurSystem}}</td>
-				<td>{{this.StuInfo.Tel}}</td>
-				<td>{{this.StuInfo.ParName}}</td>
-				<td>{{this.StuInfo.ParTel}}</td>
-				<td>{{this.StuInfo.Email}}</td>
-				<td>{{this.StuInfo.StuSource}}</td>
-				<td>{{this.StuInfo.EtrTime}}</td>
-				<td>{{this.StuInfo.TarCountry}}</td>
-				<td>{{this.StuInfo.TarSchType}}</td>
-				<td>{{this.StuInfo.TarSchYear}}</td>
-				<td>{{this.StuInfo.TarSchSeason}}</td>
+				<td>{{this.StuInfo.TarSchYear}}{{this.StuInfo.TarSchSeason}}</td>
+				<td>{{this.ServiceTeam.Waiji}}</td> 
+				<td>{{this.ServiceTeam.Celue}}</td>
+				<td>{{this.ServiceTeam.Wenshu}}</td> 
+				<td>{{this.ServiceTeam.Liucheng}}</td>
     		</tr>
 	  		{{/each}}
 	  		</tbody>

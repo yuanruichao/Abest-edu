@@ -192,10 +192,10 @@ router.post('/Visa', function(req, res, next) {
 	});
 
 });
-router.post('/Cancel', function(req, res, next) {
-	console.log("within post /Cancel");
+router.post('/Decline', function(req, res, next) {
+	console.log("within post /Decline");
 
-	Student.update({slug : req.body.slug}, {Cancel: req.body.Cancel}, function(err) {
+	Student.update({slug : req.body.slug}, {DeclineReason: req.body.DeclineReason}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
@@ -209,7 +209,7 @@ var changestatus = function(req, res, slug){
 	Student.findOne({slug: slug}, function(err, stu){
 		if(err) res.render("error", {message: "changestatus error", error: err});
 		else{
-			if(stu.Cancel != "") Student.update({slug: slug},{Status: "Cancel"},function(err){
+			if(stu.DeclineReason != "") Student.update({slug: slug},{Status: "Declined"},function(err){
 				if(err) res.render("error", {message : "Update Error", error : err});
 				else res.redirect(303, '/stu/' + slug);
 			});

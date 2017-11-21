@@ -102,7 +102,7 @@ var Student = new mongoose.Schema({
 	Results: [Results],
 	Decision: String,
 	Visa: String,
-	Cancel: String
+	DeclinedReason: String
 });
 
 User.plugin(passportLocalMongoose);
@@ -125,9 +125,9 @@ mongoose.model('Student', Student);
 
 
 
-var url = "mongodb://username:password@ds037244.mongolab.com:37244/abestapi";
-mongoose.connect(url);
-//mongoose.connect('mongodb://localhost/test');
+//var url = "mongodb://username:password@ds037244.mongolab.com:37244/abestapi";
+//mongoose.connect(url);
+mongoose.connect('mongodb://localhost/test');
 
 
 
