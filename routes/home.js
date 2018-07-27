@@ -21,7 +21,7 @@ router.post('/login', function(req,res,next) {
     if(user) {
       	req.logIn(user, function(err) {
       		console.log("login success!")
-        	res.redirect('/uploadxlsx');
+        	res.redirect('/user');
     	});
     } else {
     	if(err) res.render('error', {message: "Login error.", error: err});

@@ -6,7 +6,8 @@ TODO
 √	show declined, unassigned, assigned
 √	db add student.memo
 
-	Unassigned -> assigned 	-> bounded
+√	Unassigned -> assigned 	-> bounded
 						-> declined
 
 	bootstrap table sorting
+	History table
