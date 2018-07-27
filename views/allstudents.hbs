@@ -1,53 +1,75 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/bootstrap-table.css">
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/bootstrap-table.js"></script>
 <h1>All Students</h1>
 <div class = "panel panel-default" style = "width70%">
-	<div class = "panel-heading"></div>
+	<div class = "panel-heading"> </div>
 	<div class = "panel-body">
-		<table class = "table table-striped" id = "paytable" data-toggle = "table" data-search = "true" data-click-to-select = "true" data-select-item-name = "toolbar1" data-sort-order = "asc">
+		<div id="toolbar">
+            <div class="form-inline" role="form">
+            	<button type = "button" class = "btn btn-default" onclick = "showmodal('addstu');">New Student</button>
+            	<button type = "button" class = "btn btn-default" onclick = "getselection();">Assign Student(s)</button>
+            	<div class="form-check" style = "display: inline">
+    				<input type="checkbox" class="form-check-input" id="showmystu">
+    				<label class="form-check-label" for="showmystu">Only My Student(s)</label>
+  				</div>
+  				<div class="dropdown" style = "display: inline">
+    				<button class="btn btn-default dropdown-toggle" type="button" id="btnstatusfilter" data-toggle="dropdown">Status Filter<span class="caret"></span></button>
+    				<ul class="dropdown-menu" >
+    					<li class="checkbox"><label><input type="checkbox" id="unassignedfilter">Unassigned</label></li>
+    					<li class="checkbox"><label><input type="checkbox" id="assignedfilter">Assigned</label></li>
+    					<li class="checkbox"><label><input type="checkbox" id="boundedfilter">Bounded</label></li>
+    					<li class="checkbox"><label><input type="checkbox" id="declinedfilter">Declined</label></li>
+    				</ul>
+  				</div>
+            </div>
+        </div>
+		<table class = "table table-striped" 
+				id = "stutable" 
+				data-toggle = "table" 
+				data-search = "true" 
+				data-toolbar="#toolbar" 
+				data-click-to-select = "true" 
+				data-sort-order = "asc" 
+				data-show-columns="true"
+				data-pagination="true">
 			<thead>
 			<tr>
-	    		<th>Name</th>
-<!-- 	    		<th>Status</th>
-	    		<th>CurYear</th>
-				<th>CurSchool</th>
-				<th>CurSystem</th>
-				<th>Tel</th>
-				<th>ParName</th>
-				<th>ParTel</th>
-				<th>Email</th>
-				<th>StuSource</th>
-				<th>EtrTime</th>
-				<th>TarCountry</th>
-				<th>TarSchType</th> -->
-				<th>Status</th>
-				<th>Target School Year/Season</th>
-				<th>外籍顾问</th>
-				<th>策略顾问</th> 
-				<th>文书顾问</th>
-				<th>流程顾问</th>
+				<th data-field="state" data-checkbox="true"></th>
+	    		<th data-field="name" data-sortable = "true">Name</th>
+	    		<th data-field="status" data-sortable = "true">status</th>
+	    		<th data-field="liuCheng" data-sortable = "true">流程顾问</th>
+	    		<th data-field="tarSchYear" data-sortable = "true">tarSchYear/Season</th>
+	    		<th data-field="curSchool" data-sortable = "true">curSchool</th>
+	    		<th data-field="parName" data-sortable = "true">parName</th>
+	    		<th data-field="tel" data-sortable = "true">tel</th>
+	    		<th data-field="email" data-sortable = "true">Email</th>
+	    		<th data-field="stuSource" data-sortable = "true">stuSource</th>
+	    		<th data-field="division" data-sortable = "true">division</th>
+	    		<th data-field="memo">memo</th>
+	    		<th data-field="id" data-visible="false">_id</th>
 	  		</tr>
 	  		</thead>
 	  		<tbody>
 	  		{{#each obj}}
     		<tr>
-    			<td><a href = "/stu/{{this.slug}}">{{this.Name}}</a></td>
-    			<td>{{this.Status}}</td>
-				<td>{{this.StuInfo.TarSchYear}}{{this.StuInfo.TarSchSeason}}</td>
-				<td>{{this.ServiceTeam.Waiji}}</td> 
-				<td>{{this.ServiceTeam.Celue}}</td>
-				<td>{{this.ServiceTeam.Wenshu}}</td> 
-				<td>{{this.ServiceTeam.Liucheng}}</td>
+    			<td></td>
+    			<td><a href = "/stu/{{this.slug}}">{{this.name}}</a></td>
+    			<td>{{this.status}}</td>
+    			<td>{{this.serviceTeam.liuCheng}}</td>
+				<td>{{this.stuInfo.tarSchYear}}</td>
+				<td>{{this.stuInfo.curSchool}}</td>
+				<td>{{this.stuInfo.parName}}</td>
+				<td>{{this.stuInfo.tel}}</td>
+				<td>{{this.stuInfo.email}}</td>
+				<td>{{this.stuInfo.stuSource}}</td>
+				<td>{{this.stuInfo.division}}</td>
+				<td>{{this.memo}}</td>
+				<td>{{this.id}}</td>
     		</tr>
 	  		{{/each}}
 	  		</tbody>
 		</table>
 	</div>
-	<button type = "button" class = "btn btn-default" onclick = "showmodal()">New Student</button>
+	
 </div>
 
 <div class = "modal" id = "addstu">
@@ -59,20 +81,43 @@
 					<h4>Add a Student</h4>
 				</div>
 				<div class = "modal-body">
-					Name: <input name="Name" type = "text"><br><br>
-					Current Year: <input name="CurYear" type = "year"><br><br>
-					Current School: <input name="CurSchool" type = "text"><br><br>
-					Current System: <input name="CurSystem" type = "text"><br><br>
-					Tel: <input name="Tel" type = "tel"><br><br>
-					Parent Name: <input name="ParName" type = "text"><br><br>
-					Parent Tel: <input name="ParTel" type = "tel"><br><br>
-					Email: <input name="Email" type = "email"><br><br>
-					Student Source: <input name="StuSource" type = "text"><br><br>
-					Enter Time: <input name="EtrTime" type = "date"><br><br>
-					Target Country: <input name="TarCountry" type = "text"><br><br>
-					Target School Type: <input name="TarSchType" type = "text"><br><br>
-					Target School Year: <input name="TarSchYear" type = "year"><br><br>
-					Target School Season: <input name="TarSchSeason" type = "text"><br><br>
+					姓名: <input name="Name" type = "text"><br><br>
+					就读年级: <input name="curYear" type = "year"><br><br>
+					就读学校: <input name="curSchool" type = "text"><br><br>
+					Tel: <input name="tel" type = "tel"><br><br>
+					家长姓名: <input name="parName" type = "text"><br><br>
+					Email: <input name="email" type = "email"><br><br>
+					division: <input name="division" type = "text"><br><br>
+					Student Source: <input name="stuSource" type = "text"><br><br>
+					Acquired Date: <input name="aquireDate" type = "date"><br><br>
+					Target Country: <input name="tarCountry" type = "text"><br><br>
+					Target School Type: <input name="tarSchType" type = "text"><br><br>
+					Target School Year: <input name="tarSchYear" type = "year"><br><br>
+				</div>
+				<div class = "modal-footer">
+					<button type = "submit">Create</button>	
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class = "modal" id = "assignstu">
+	<div class = "modal-dialog">
+		<div class = "modal-content">
+			<form id = "assignstuform" method="POST" action="/api/assignstu">
+				<div class = "modal-header">
+					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
+					<h4>Assign a Student</h4>
+				</div>
+				<div class = "modal-body">
+					Assign <p id="selectedstuname">a</p> to:
+					<select name = "liucheng" id = "liuChengSelection" form = "assignstuform">
+						{{#each allusers}}
+						<option value = "{{this.username}}">{{this.username}}</option>
+						{{/each}}
+					</select>
+					<input name = "stuid" id = "selectedstuid" style = "display:none;" type = "text">
 				</div>
 				<div class = "modal-footer">
 					<button type = "submit">Create</button>	
@@ -83,13 +128,78 @@
 </div>
 
 
-
+<style>
+.dropdown-menu > li.checkbox{
+	padding: 3px 20px;
+}
+</style>
 
 <script>
-var showmodal = function(){
-	var table = $("#addstu");
-	console.log(table);
+$( document ).ready(function() {
+    console.log("dom ready!");
+    var username = "{{user.username}}"
+    $("#showmystu").click(function() {
+        checked = $("#showmystu").prop('checked')
+    	if(checked){
+			filterTable("liuCheng", [username])
+    	}
+    	else{
+			filterTable("liuCheng", [])
+    	}
+    });
+
+    $(".dropdown-menu").click(function(e){
+    	e.stopPropagation();
+    	var res = []
+    	if($("#unassignedfilter").prop("checked")) res.push("unassigned")
+		if($("#assignedfilter").prop("checked")) res.push("assigned")
+		if($("#boundedfilter").prop("checked")) res.push("bounded")
+		if($("#declinedfilter").prop("checked")) res.push("declined")
+		// console.log(res)
+		filterTable("status", res)
+    })
+
+    $("#unassignedfilter").prop("checked", true)
+    $("#assignedfilter").prop("checked", true)
+    filterTable("status", ["unassigned", "assigned"])
+});
+</script>
+
+<script>
+var filters = {}
+var filterTable = function(key, val){
+	if(val.length == 0){
+		filters[key] = undefined
+		filters = JSON.parse(JSON.stringify(filters))
+	}
+	else filters[key] = val;
+	console.log(filters)
+	$("#stutable").bootstrapTable('filterBy', filters)
+}
+
+var showmodal = function(e){
+	var table = $("#" + e);
+	console.log('show modal ' + e);
 	table.modal('show');
+}
+
+var getselection = function(e){
+	var selections = $('#stutable').bootstrapTable('getSelections');
+	if(selections.length == 0) alert("Please select more than One Student")
+	else{
+		showmodal('assignstu');
+		$('#selectedstuname').text("");
+		$('#selectedstuid').val("");
+		selections.forEach(function(e){
+			var str = $(e.name).text();
+			var ids = e.id
+			// console.log(str)
+			$('#selectedstuname').append(str + ', ');
+			$('#selectedstuid').val($('#selectedstuid').val() + ids + ',');
+		})
+		$('#selectedstuname').text($('#selectedstuname').text().slice(0, -2));
+		$('#selectedstuid').val($('#selectedstuid').val().slice(0, -1));
+	}
 }
 
 </script>

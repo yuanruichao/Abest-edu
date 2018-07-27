@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<h2>Login</h2>
+{{message}}
+<form method="POST" action="">
+<div>
+	<label>username:</label> <input type="text" name="username" id = 'username'>	
+</div>
+<div>
+	<label>password:</label> <input type="password" name="password" id = 'password'> 
+</div>
+	<button id = "btn1">submit</button>	<a href = "/register">Resgister</a>
+</form>
+
+<script>
+	var btn1 = document.getElementById('btn1');
+	btn1.setAttribute('onclick', handleclick);
+	var username = document.getElementById('username').value;
+	var password = document.getElementById('password').value;
+
+	var handleclick = function(){
+		var req = new XMLHttpRequest();
+		url = 'http://localhost:8000/login';
+		req.open('POST', url, true);
+		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		req.send('username=' + username + '&password=' + password);
+	}
+
+</script>
+

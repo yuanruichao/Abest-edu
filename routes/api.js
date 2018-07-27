@@ -3,18 +3,24 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var StuInfo = mongoose.model('StuInfo');
-var ServiceTeam = mongoose.model('ServiceTeam');
-var Transcript = mongoose.model('Transcript');
-var ToeflScr = mongoose.model('ToeflScr');
-var SATScr = mongoose.model('SATScr');
-var SAT2Scr = mongoose.model('SAT2Scr');
-var APScr = mongoose.model('APScr');
-var Score = mongoose.model('Score');
-var InitEvl = mongoose.model('InitEvl');
-var School = mongoose.model('School');
-var Results = mongoose.model('Results');
+var StuInfo = mongoose.model('stuInfo');
+var ServiceTeam = mongoose.model('serviceTeam');
+var stuEvent = mongoose.model('stuEvent');
+// var Transcript = mongoose.model('Transcript');
+// var ToeflScr = mongoose.model('ToeflScr');
+// var SATScr = mongoose.model('SATScr');
+// var SAT2Scr = mongoose.model('SAT2Scr');
+// var APScr = mongoose.model('APScr');
+// var Score = mongoose.model('Score');
+// var InitEvl = mongoose.model('InitEvl');
+// var School = mongoose.model('School');
+// var Results = mongoose.model('Results');
 var Student = mongoose.model('Student');
+
+var fs = require('fs');
+var path = require('path')
+
+var XLSX = require('xlsx');
 
 var nodemailer = require('nodemailer');
 var smtpTransport = require("nodemailer-smtp-transport")
@@ -25,237 +31,316 @@ router.post('/newstu', function(req, res, next) {
 	console.log("within post /newstu");
 	// console.log("body = ", req.body);
 
-	console.log("test0");
+	var si = new StuInfo({
+		curYear : req.body.curYear,
+		curSchool : req.body.curSchool,
+		tel : req.body.tel,
+		parName : req.body.parName,
+		email : req.body.email,
+		division: req.body.division,
+		stuSource : req.body.stuSource,
+		aquireDate : req.body.aquireDate,
+		tarSchType : req.body.tarSchType,
+		tarSchYear : req.body.tarSchYear,
+	});
 	var s = new Student({
 		Name : req.body.Name,
-		Cancel: ""
+		stuInfo: si,
+		status: "unassigned"
 	});
-	console.log("test1", s);
+
+	console.log("new Stu:\n", s);
 	s.save(function(err, stu, count) {
-		console.log("test2");
-    	// if(err) res.render("error", {message : "Save Error", error : err});
-    	// else 
-    	changestatus(req, res, s.slug);
+		
+    	if(err) res.render("error", {message : "Save Error", error : err});
+    	else 
+    	// changestatus(req, res, s.slug);
+    		res.redirect('/allstudents');
   	});
 });
+
+
+router.post('/assignstu', function(req, res, next) {
+	console.log("within post /assignstu");
+	// console.log(req.body);
+
+	var toUpdate = req.body.stuid.split(',');
+	var liuCheng = req.body.liucheng;
+
+	Student.update({_id: {$in: toUpdate}}, {$set:{"serviceTeam.liuCheng":liuCheng, status: "assigned"}}, {"multi": true}, function(err) {
+		if(err)
+    		res.render("error", {message : "Update Error", error : err});
+    	else {
+    		res.redirect('/allstudents');
+		}
+	});
+});
+
+router.post('/addevent', function(req, res, next) {
+	console.log("within post /addevent");
+	// console.log(req.body);
+
+	var stuid = req.body.stuid;
+	var memo = req.body.memo;
+	var date = req.body.date;
+	var toAdd = new stuEvent({
+		// stuid: stuid,
+		date: date,
+		memo: memo
+	})
+	console.log(stuid)
+	// console.log("findOneAndUpdate({_id:"+stuid+"}, {$set:{\"events\":toAdd}}")
+	Student.findOneAndUpdate({_id:stuid}, {$push:{"stuEvents":toAdd}}, function(err) {
+		if(err)
+    		res.render("error", {message : "Update Error", error : err});
+    	else {
+    		res.redirect('/allstudents');
+		}
+	});
+});
+
+
+router.get('/getevents/:slug', function(req, res, next) {
+	console.log("within get /getevents");
+	// console.log(req.body);
+	var slug = req.params.slug;
+
+	Student.find({"serviceTeam.liuCheng": slug}, function(err, stu, count){
+		if(err) console.log(err)
+		else{
+			// console.log(stu);
+			var arr = []
+			stu.forEach(function(e){
+				// console.log("id = " + stu._id)
+				e.stuEvents.forEach(function(ee){
+					//TODO ee does not work!
+					var tmp = {}
+					tmp._id = ee._id
+					tmp.date = ee.date;
+					tmp.memo = ee.memo;
+					tmp.stuId = e._id;
+					tmp.stuName = e.name;
+					arr.push(tmp);
+				})
+			})
+			console.log(arr);
+			arr.sort(function(a, b){return a.date - b.date});
+			res.send(arr);
+		}
+	});
+});
+
+router.post('/completeevent', function(req, res, next) {
+	console.log("within post /completeevent");
+
+	var stuId = req.body.stuId;
+	console.log(stuId);
+	var id = req.body.id;
+	console.log(id);
+	// console.log(req.body);
+	Student.findOne({"_id": stuId}, function(err, stu, count){
+		console.log(stu);
+		stueve = stu.stuEvents.filter(function(e){return e._id == id});
+		console.log(stueve)
+		Student.findOneAndUpdate({_id:stuId}, {$push:{"historyEvents":stueve[0]}}, function(err){
+			Student.update({"_id": stuId}, {$pull:{stuEvents:{"_id": id}}}, function(err){
+				if(err)
+    				res.render("error", {message : "Update Error", error : err});
+    			else {
+    				res.redirect('/user');
+				}
+			});
+		})
+	})
+});
+
+
+router.post('/uploadxlsx', function(req, res, next) {
+	console.log("within post /uploadxlsx");
+	// console.log(req.files)
+	// console.log(__dirname);
+
+	var savePath = __dirname.substring(0, __dirname.lastIndexOf(path.sep))
+	savePath = path.join(savePath, 'uploadFiles', req.files.file.name)
+	console.log(savePath)
+
+	req.files.file.mv(savePath, function(err) {
+    	if (err) return res.status(500).send(err);
+		Student.find(function(err, stu, count){
+			stuNames = []
+			stuTels = []
+			stu.forEach(function(e){
+				stuNames.push(e.name)
+				stuTels.push(e.stuInfo.tel);
+			})
+			var workbook = XLSX.readFile(savePath);
+			doc = []
+			duplicates = []
+			for(var i = 0; i < workbook.SheetNames.length; i++){
+				// if(i > 0) break;
+				var sname = workbook.SheetNames[i]
+				var sheet = workbook.Sheets[sname]
+				var j = 3
+				while(sheet['A' + j]){
+					cur = {}
+					// console.log(sname + " row " + j)
+					// console.log(sheet['B' + j].v)
+					var si  = {
+						curSchool : (sheet['E' + j] ? sheet['E' + j].v : ""),
+						tel : (sheet['G' + j] ? sheet['G' + j].v : ""),
+						parName : (sheet['F' + j] ? sheet['F' + j].v : ""),
+						email : (sheet['H' + j] ? sheet['H' + j].v : ""),
+						division: "上海",
+						tarSchYear : (sheet['D' + j] ? sheet['D' + j].v : ""),
+						stuSource : (sheet['I' + j] ? sheet['I' + j].v : "")
+					}
+					var cur = {
+						name : (sheet['B' + j] ? sheet['B' + j].v : ""),
+						stuInfo: si,
+						status: "unassigned"
+					}
+					if(sheet['B' + j] && stuNames.includes(sheet['B' + j].v)|| 
+						sheet['G' + j] && stuTels.includes(sheet['G' + j].v)){
+						duplicates.push(cur);
+					}
+					else{
+						stuNames.push(sheet['B' + j] ? sheet['B' + j].v : "")
+						stuTels.push(sheet['G' + j] ? sheet['G' + j].v : "")
+						doc.push(cur);
+					}
+					j = j + 1;
+					
+				}
+			}
+			Student.create(doc, function (err, docs) {
+      			if (err){ 
+          			console.error(err);
+          			res.send(err);
+      			} else {
+        			res.send(duplicates)
+      			}
+    		});
+			
+		});
+  	});
+});
+
+router.get('/getstuinfo/:name/:tel', function(req, res, next) {
+	console.log("within get /getstuinfo");
+	var params = req.params;
+	var id = req.params.id
+	var tel = req.params.tel
+	console.log(params);
+
+	Student.findOne({$or:[ {'_id':id}, {'stuInfo.tel':tel}]}, function(err, stu, count) {
+		if (stu == null) {
+			console.log("not found stu");
+			res.send('error')
+		}
+		else res.send(stu)
+  	});
+
+});
+
+router.post('/addstu', function(req, res, next) {
+	console.log("within post /addstu");
+	var stu = req.body.stu
+	stu.forEach(function(e){
+		var si  = {
+			curSchool : e.curSchool,
+			tel : e.tel,
+			parName : e.parName,
+			email : e.email,
+			division: e.division,
+			tarSchYear : e.tarSchYear,
+			stuSource : e.stuSource
+		}
+		var st = {
+			liuCheng: e.liuCheng
+		}
+		var cur = {
+			name : e.name,
+			stuInfo: si,
+			serviceTeam: st,
+			status: "unassigned"
+		}
+		doc.push(cur);		
+	});
+	Student.create(doc, function (err, docs) {
+   		if (err){ 
+      		console.error(err);
+      		res.send(err);
+   		} else {
+    		res.send('success')
+   		}
+	});
+
+});
+
 
 router.post('/StuInfo', function(req, res, next) {
 	console.log("within post /StuInfo");
 	
 	var si = new StuInfo({
-		CurYear : req.body.CurYear,
-		CurSchool : req.body.CurSchool,
-		CurSystem : req.body.CurSystem,
-		Tel : req.body.Tel,
-		ParName : req.body.ParName,
-		ParTel : req.body.ParTel,
-		Email : req.body.Email,
-		StuSource : req.body.StuSource,
-		EtrTime : req.body.EtrTime,
-		TarCountry : req.body.TarCountry,
-		TarSchType : req.body.TarSchType,
-		TarSchYear : req.body.TarSchYear,
-		TarSchSeason : req.body.TarSchSeason
+		curYear : req.body.curYear,
+		curSchool : req.body.curSchool,
+		tel : req.body.tel,
+		parName : req.body.parName,
+		email : req.body.email,
+		stuSource : req.body.stuSource,
+		tarCountry : req.body.tarCountry,
+		tarSchType : req.body.tarSchType,
+		tarSchYear : req.body.tarSchYear,
+		division : req.body.division,
+		aquireDate : req.body.aquireDate,
 	});
 
 	Student.update({slug : req.body.slug}, {StuInfo: si}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
-    		changestatus(req, res, req.body.slug);
+    		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
 
 });
-router.post('/ServiceTeam', function(req, res, next) {
-	console.log("within post /ServiceTeam");
-	
-	var si = new ServiceTeam({
-		AssignDate : req.body.AssignDate,
-		Sales : req.body.Sales,
-		Waiji : req.body.Waiji,
-		Celue : req.body.Celue,
-		Wenshu : req.body.Wenshu,
-		Liucheng : req.body.Liucheng,
-	});
 
-	Student.update({slug : req.body.slug}, {ServiceTeam: si}, function(err) {
+router.post('/setmemo', function(req, res, next) {
+	console.log("within post /setmemo");
+	// console.log(req.body);
+	Student.update({slug : req.body.slug}, {memo: req.body.stumemo}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
-    		changestatus(req, res, req.body.slug);
+    		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
 
 });
-router.post('/Score', function(req, res, next) {
-	console.log("within post /Score");
-	
-	var si = new Score({
-		Transcript : req.body.Transcript,
-		ToeflScrs : req.body.ToeflScrs,
-		IELTSScrs : req.body.IELTSScrs,
-		SATScrs : req.body.SATScrs,
-		SAT2Scrs : req.body.SAT2Scrs,
-		APScrs : req.body.APScrs,
-	});
 
-	Student.update({slug : req.body.slug}, {Score: si}, function(err) {
+router.post('/bound', function(req, res, next) {
+	console.log("within post /setmemo");
+	// console.log(req.body);
+	Student.update({slug : req.body.slug}, {status: "bounded"}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
-    		changestatus(req, res, req.body.slug);
+    		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
-
 });
-router.post('/InitEvl', function(req, res, next) {
-	console.log("within post /InitEvl");
-	
-	var si = new InitEvl({
-		StuQues : req.body.StuQues,
-		ParQues : req.body.ParQues,
-		PostRep : req.body.PostRep,
-		DeepSkype : req.body.DeepSkype,
-	});
 
-	Student.update({slug : req.body.slug}, {InitEvl: si}, function(err) {
+router.post('/decline', function(req, res, next) {
+	console.log("within post /decline");
+	// console.log(req.body);
+	Student.update({slug : req.body.slug}, {status: "declined", declinedReason: req.body.declinedReason}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
-    		changestatus(req, res, req.body.slug);
+    		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
-
 });
-router.post('/SchList', function(req, res, next) {
-	console.log("within post /SchList");
-	
-	var sch = new School({
-		Date: req.body.Date,
-		Schools: req.body.Schools
-	});
-
-	var si = new Results({
-		SchName : req.body.Schools,
-		Result : "Pending",
-	});
-
-	Student.update({slug : req.body.slug}, {SchList: sch, Results: si}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		changestatus(req, res, req.body.slug);
-		}
-	});
-
-});
-
-router.post('/Result', function(req, res, next) {
-	console.log("within post /Result");
-	
-	var si = new Results({
-		SchName : req.body.SchName,
-		Result : req.body.Result,
-	});
-
-	Student.update({slug : req.body.slug}, {Results: si}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		changestatus(req, res, req.body.slug);
-		}
-	});
-
-});
-router.post('/Decision', function(req, res, next) {
-	console.log("within post /Decision");
-
-	Student.update({slug : req.body.slug}, {Decision: req.body.Decision,}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		changestatus(req, res, req.body.slug);
-		}
-	});
-
-});
-router.post('/Visa', function(req, res, next) {
-	console.log("within post /Visa");
-	
-	Student.update({slug : req.body.slug}, {Visa: req.body.Visa,}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		changestatus(req, res, req.body.slug);
-		}
-	});
-
-});
-router.post('/Decline', function(req, res, next) {
-	console.log("within post /Decline");
-
-	Student.update({slug : req.body.slug}, {DeclineReason: req.body.DeclineReason}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		changestatus(req, res, req.body.slug);
-		}
-	});
-
-});
-
-var changestatus = function(req, res, slug){
-	Student.findOne({slug: slug}, function(err, stu){
-		if(err) res.render("error", {message: "changestatus error", error: err});
-		else{
-			if(stu.DeclineReason != "") Student.update({slug: slug},{Status: "Declined"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.StuInfo == null) Student.update({slug: slug},{Status: "StuInfo"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.ServiceTeam == null) Student.update({slug: slug},{Status: "ServiceTeam"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.Score == null) Student.update({slug: slug},{Status: "Score"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.InitEvl == null) Student.update({slug: slug},{Status: "InitEvl"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.SchList == "") Student.update({slug: slug},{Status: "SchList"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.Results == null) Student.update({slug: slug},{Status: "Result"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.Decision == "") Student.update({slug: slug},{Status: "Decision"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else if(stu.Visa == "") Student.update({slug: slug},{Status: "Visa"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-			else Student.update({slug: slug},{Status: "Done"},function(err){
-				if(err) res.render("error", {message : "Update Error", error : err});
-				else res.redirect(303, '/stu/' + slug);
-			});
-		}
-	})
-	
-}
-
-
-
 
 
 

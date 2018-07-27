@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<h1>User Page</h1>
+<div class="container">
+
+	<div class="row">
+		<div class = "col-xs-8" id = "todoContainer">
+			<h3>To Do List:<h3>
+		</div>
+		<div class = "col-xs-4">
+			<h3>Current Student List:</h3>
+				<ul>
+					{{#each stu}}
+					<li><a href = "/stu/{{this.slug}}">{{this.name}}</a></li>
+					{{/each}}
+				</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+    console.log("dom ready!");
+    var username = "{{user.username}}"
+    var getEvents = $.get("/api/getevents/" + username, function(data) {
+		console.log("success");
+		console.log(data);
+		data.forEach(function(e){
+			$("#todoContainer").append("<div class=\"row\"><div class=\"col-xs-10\"><h2>" + e.stuName + "</h2><h4>" + e.date.split('T')[0] + "</h4><br>&nbsp;&nbsp;&nbsp;&nbsp;<p>" + e.memo + "</p><br><button type = 'button' class = 'btn btn-success' id = 'btn" + e._id + "#" + e.stuId + "'>Complete</button></div></div><br>");
+		})
+	})
+	.done(function(data){
+		$('.btn-success').click(function(e){
+			console.log(this.id);
+			tmp = this.id.split('btn')[1].split('#')
+			$.redirect("/api/completeevent", {id : tmp[0], stuId : tmp[1]})
+		});
+	})
+  	.fail(function() {
+    	alert( "error" );
+  	});
+
+    
+});
+
+
+</script>
+
+<style type="text/css">
+h2, h4, p {
+	display: inline;
+}
+</style>

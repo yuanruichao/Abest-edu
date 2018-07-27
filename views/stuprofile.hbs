@@ -5,34 +5,22 @@ h2 {
 }
 </style>
 
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/bootstrap-table.css">
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/bootstrap-table.js"></script>
-<h1>{{obj.Name}}</h1>
-<input value = "{{obj.Status}}" type = "hidden" id = "Status"></input>
-<h2>Status: </h2><h2><small id = "StuInfo">StuInfo</small></h2>
+
+<h1>{{obj.name}}</h1>
+<input value = "{{obj.status}}" type = "hidden" id = "status"></input>
+<h2>Status: </h2><h2><small id = "unassigned">Unassigned</small></h2>
 &nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "ServiceTeam">ServiceTeam</small></h2>
+<h2><small id = "assigned">Assigned</small></h2>
 &nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "Score">Score</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "InitEvl">InitEvl</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "SchList">SchList</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "Result">Result</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "Decision">Decision</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "Visa">Visa</small></h2>
-&nbsp;<span class = "glyphicon glyphicon-arrow-right"></span>&nbsp;
-<h2><small id = "Done">Done</small></h2>
+<h2><small id = "bounded">Bounded</small></h2>
 &nbsp;////&nbsp;
-<h2><small id = "Declined">Declined</small></h2>
+<h2><small id = "declined">Declined</small></h2>
 <br>
 <br>
+<div class="row" style="margin: 15px">
+		<button class="btn btn-default" onclick="showmodal('addevent');">Add Event!</button>
+		<button class="btn btn-default" onclick="showmodal('changeStatus');">Change Status!</button>
+</div>
 <div class="row">
 	<div class="col-xs-6">
 		<div class = "panel panel-default">
@@ -40,68 +28,33 @@ h2 {
 			<div class = "panel-body">
 				<p onclick = "$('#basicinfo').hide();$('#basicinfo2').show();" style = "display:none;text-align: center;" id = "basicinfo">Click to Show</p>
 				<ul id = "basicinfo2">
-					<li>CurYear: {{obj.StuInfo.CurYear}}</li>
-					<li>CurSchool: {{obj.StuInfo.CurSchool}}</li>
-					<li>CurSystem: {{obj.StuInfo.CurSystem}}</li>
-					<li>Tel: {{obj.StuInfo.Tel}}</li>
-					<li>ParName: {{obj.StuInfo.ParName}}</li>
-					<li>ParTel: {{obj.StuInfo.ParTel}}</li>
-					<li>Email: {{obj.StuInfo.Email}}</li>
-					<li>StuSource: {{obj.StuInfo.StuSource}}</li>
-					<li>EtrTime: {{obj.StuInfo.EtrTime}}</li>
-					<li>TarCountry: {{obj.StuInfo.TarCountry}}</li>
-					<li>TarSchType: {{obj.StuInfo.TarSchType}}</li>
-					<li>TarSchYear: {{obj.StuInfo.TarSchYear}}</li>
-					<li>TarSchSeason: {{obj.StuInfo.TarSchSeason}}</li>
+					<li>curYear: {{obj.stuInfo.curYear}}</li>
+					<li>curSchool: {{obj.stuInfo.curSchool}}</li>
+					<li>tel: {{obj.stuInfo.tel}}</li>
+					<li>parName: {{obj.stuInfo.parName}}</li>
+					<li>email: {{obj.stuInfo.email}}</li>
+					<li>stuSource: {{obj.stuInfo.stuSource}}</li>
+					<li>tarCountry: {{obj.stuInfo.tarCountry}}</li>
+					<li>tarSchType: {{obj.stuInfo.tarSchType}}</li>
+					<li>tarSchYear: {{obj.stuInfo.tarSchYear}}</li>
+					<li>division: {{obj.stuInfo.division}}</li>
+					<li>aquireDate: {{obj.stuInfo.aquireDate}}</li>
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="col-xs-6">
 		<div class = "panel panel-default">
-			<div class = "panel-heading">Service Team<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#ServiceTeam_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#serviceteam').hide();$('#serviceteam2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#serviceteam').show();$('#serviceteam2').hide();"></span></div></div>
+			<div class = "panel-heading">Service Team<div style = "float:right"><span class = "glyphicon glyphicon-plus" onclick = "$('#serviceteam').hide();$('#serviceteam2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#serviceteam').show();$('#serviceteam2').hide();"></span></div></div>
 			<div class = "panel-body">
 				<p onclick = "$('#serviceteam').hide();$('#serviceteam2').show();" style = "display:none;text-align: center;" id = "serviceteam">Click to Show</p>
 				<ul id = "serviceteam2">
-					<li>AssignDate: {{obj.ServiceTeam.AssignDate}}</li>
-					<li>Sales: {{obj.ServiceTeam.Sales}}</li>
+					<!-- <li>AssignDate: {{obj.ServiceTeam.AssignDate}}</li> -->
+					<!-- <li>Sales: {{obj.ServiceTeam.Sales}}</li>
 					<li>Waiji: {{obj.ServiceTeam.Waiji}}</li>
 					<li>Celue: {{obj.ServiceTeam.Celue}}</li>
-					<li>Wenshu: {{obj.ServiceTeam.Wenshu}}</li>
-					<li>Liucheng: {{obj.ServiceTeam.Liucheng}}</li>
-				</ul>
-			</div>	
-		</div>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-6">
-		<div class = "panel panel-default">
-			<div class = "panel-heading">Score<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Score_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Score').hide();$('#Score2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Score').show();$('#Score2').hide();"></span></div></div>
-			<div class = "panel-body">
-				<p onclick = "$('#Score').hide();$('#Score2').show();" style = "display:none;text-align: center;" id = "Score">Click to Show</p>
-				<ul id = "Score2">
-					<li>Transcript: {{obj.Score.Transcript}}</li>
-					<li>ToeflScrs: {{obj.Score.ToeflScrs}}</li>
-					<li>IELTSScrs: {{obj.Score.IELTSScrs}}</li>
-					<li>SATScrs: {{obj.Score.SATScrs}}</li>
-					<li>SAT2Scrs: {{obj.Score.SAT2Scrs}}</li>
-					<li>APScrs: {{obj.Score.APScrs}}</li>
-				</ul>
-			</div>	
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class = "panel panel-default">
-			<div class = "panel-heading">Initial Evluation<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#InitEvl_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#InitEvl').hide();$('#InitEvl2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#InitEvl').show();$('#InitEvl2').hide();"></span></div></div>
-			<div class = "panel-body">
-				<p onclick = "$('#InitEvl').hide();$('#InitEvl2').show();" style = "display:none;text-align: center;" id = "InitEvl">Click to Show</p>
-				<ul id = "InitEvl2">
-					<li>StuQues: {{obj.InitEvl.StuQues}}</li>
-					<li>ParQues: {{obj.InitEvl.ParQues}}</li>
-					<li>PostRep: {{obj.InitEvl.PostRep}}</li>
-					<li>DeepSkype: {{obj.InitEvl.DeepSkype}}</li>
+					<li>Wenshu: {{obj.ServiceTeam.Wenshu}}</li> -->
+					<li>Liucheng: {{obj.serviceTeam.liuCheng}}</li>
 				</ul>
 			</div>	
 		</div>
@@ -111,52 +64,11 @@ h2 {
 <div class="row">
 	<div class="col-md-12">
 		<div class = "panel panel-default">
-			<div class = "panel-heading">School List<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#SchList_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#SchList').hide();$('#SchList2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#SchList').show();$('#SchList2').hide();"></span></div></div>
+			<div class = "panel-heading">Memo<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#memo_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#memo').hide();$('#memoDiv').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#memo').show();$('#memoDiv').hide();"></span></div></div>
 			<div class = "panel-body">
-				<p onclick = "$('#SchList').hide();$('#SchList2').show();" style = "display:none;text-align: center;" id = "SchList">Click to Show</p>
-				<p id = "SchList2">
-					{{#each obj.SchList}}
-						{{this.Schools}}
-					{{/each}}
-				</p>
-			</div>	
-		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<div class = "panel panel-default">
-			<div class = "panel-heading">Result<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Result_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Result').hide();$('#Result2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Result').show();$('#Result2').hide();"></span></div></div>
-			<div class = "panel-body">
-				<p onclick = "$('#Result').hide();$('#Result2').show();" style = "display:none;text-align: center;" id = "Result">Click to Show</p>
-				<ul id = "Result2">
-					{{#each obj.Results}}
-						<li>{{this.SchName}}: {{this.Result}}</li>
-					{{/each}}
-				</ul>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-6">
-		<div class = "panel panel-default">
-			<div class = "panel-heading">Decision<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Decision_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Decision').hide();$('#Decision2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Decision').show();$('#Decision2').hide();"></span></div></div>
-			<div class = "panel-body">
-				<p onclick = "$('#Decision').hide();$('#Decision2').show();" style = "display:none;text-align: center;" id = "Decision">Click to Show</p>
-				<p id = "Decision2">
-					{{obj.Decision}}
-				</p>
-			</div>	
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class = "panel panel-default">
-			<div class = "panel-heading">Visa<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Visa_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Visa').hide();$('#Visa2').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Visa').show();$('#Visa2').hide();"></span></div></div>
-			<div class = "panel-body">
-				<p onclick = "$('#Visa').hide();$('#Visa2').show();" style = "display:none;text-align: center;" id = "Visa">Click to Show</p>
-				<p id = "Visa2">
-					{{obj.Visa}}
+				<p onclick = "$('#memo').hide();$('#memoDiv').show();" style = "display:none;text-align: center;" id = "memo">Click to Show</p>
+				<p id = "memoDiv">
+					{{obj.memo}}
 				</p>
 			</div>	
 		</div>
@@ -166,11 +78,36 @@ h2 {
 <div class="row">
 	<div class="col-md-12">
 		<div class = "panel panel-default">
-			<div class = "panel-heading">Cancel<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Cancel_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Cancel').hide();$('#CancelDiv').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Cancel').show();$('#CancelDiv').hide();"></span></div></div>
+			<div class = "panel-heading">Decline<div style = "float:right"><span class = "glyphicon glyphicon-edit" onclick = "$('#Cancel_modal').modal('show');"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#Cancel').hide();$('#CancelDiv').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#Cancel').show();$('#CancelDiv').hide();"></span></div></div>
 			<div class = "panel-body">
 				<p onclick = "$('#Cancel').hide();$('#CancelDiv').show();" style = "display:none;text-align: center;" id = "Cancel">Click to Show</p>
 				<p id = "CancelDiv">
-					{{obj.DeclinedReason}}
+					{{obj.declinedReason}}
+				</p>
+			</div>	
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class = "panel panel-default">
+			<div class = "panel-heading">Events<div style = "float:right"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-plus" onclick = "$('#events').hide();$('#eventsDiv').show();"></span>&nbsp;&nbsp;<span class = "glyphicon glyphicon-minus" onclick = "$('#events').show();$('#eventsDiv').hide();"></span></div></div>
+			<div class = "panel-body">
+				<p onclick = "$('#events').hide();$('#eventsDiv').show();" style = "display:none;text-align: center;" id = "events">Click to Show</p>
+				<p id = "eventsDiv">
+					{{#each obj.stuEvents}}
+					<p>
+						Date: {{this.date}}<br>
+						Memo: {{this.memo}}<br>
+					</p>
+					{{/each}}
+					{{#each obj.historyEvents}}
+					<p>
+						Date: {{this.date}}<br>
+						Memo: {{this.memo}}<br>
+					</p>
+					{{/each}}
 				</p>
 			</div>	
 		</div>
@@ -180,144 +117,113 @@ h2 {
 <div class = "modal" id = "StuInfo_modal">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
-			<form method="POST" action="/api/StuInfo">
+			<form method="POST" action="/api/stuInfo">
 				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
 				<div class = "modal-header">
 					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
 					<h4>Student Info</h4>
 				</div>
 				<div class = "modal-body">
-					Current Year: <input value = "{{obj.StuInfo.CurYear}}" name="CurYear" type = "year"><br><br>
-					Current School: <input value = "{{obj.StuInfo.CurSchool}}" name="CurSchool" type = "text"><br><br>
-					Current System: <input value = "{{obj.StuInfo.CurSystem}}" name="CurSystem" type = "text"><br><br>
-					Tel: <input value = "{{obj.StuInfo.Tel}}" name="Tel" type = "tel"><br><br>
-					Parent Name: <input value = "{{obj.StuInfo.ParName}}" name="ParName" type = "text"><br><br>
-					Parent Tel: <input value = "{{obj.StuInfo.ParTel}}" name="ParTel" type = "tel"><br><br>
-					Email: <input value = "{{obj.StuInfo.Email}}" name="Email" type = "email"><br><br>
-					Student Source: <input value = "{{obj.StuInfo.StuSource}}" name="StuSource" type = "text"><br><br>
-					Enter Time: <input value = "{{obj.StuInfo.EtrTime}}" name="EtrTime" type = "date"><br><br>
-					Target Country: <input value = "{{obj.StuInfo.TarCountry}}" name="TarCountry" type = "text"><br><br>
-					Target School Type: <input value = "{{obj.StuInfo.TarSchType}}" name="TarSchType" type = "text"><br><br>
-					Target School Year: <input value = "{{obj.StuInfo.TarSchYear}}" name="TarSchYear" type = "year"><br><br>
-					Target School Season: <input value = "{{obj.StuInfo.TarSchSeason}}" name="TarSchSeason" type = "text"><br><br>
+					curYear: <input value = "{{obj.stuInfo.curYear}}" name="curYear" type = "year"><br><br>
+					curSchool: <input value = "{{obj.stuInfo.curSchool}}" name="curSchool" type = "text"><br><br>
+					tel: <input value = "{{obj.stuInfo.tel}}" name="tel" type = "text"><br><br>
+					parName: <input value = "{{obj.stuInfo.parName}}" name="parName" type = "text"><br><br>
+					email: <input value = "{{obj.stuInfo.email}}" name="email" type = "text"><br><br>
+					stuSource: <input value = "{{obj.stuInfo.stuSource}}" name="stuSource" type = "tel"><br><br>
+					tarCountry: <input value = "{{obj.stuInfo.tarCountry}}" name="tarCountry" type = "email"><br><br>
+					tarSchType: <input value = "{{obj.stuInfo.tarSchType}}" name="tarSchType" type = "text"><br><br>
+					tarSchYear: <input value = "{{obj.stuInfo.tarSchYear}}" name="tarSchYear" type = "text"><br><br>
+					division: <input value = "{{obj.stuInfo.division}}" name="division" type = "text"><br><br>
+					aquireDate: <input value = "{{obj.stuInfo.aquireDate}}" name="aquireDate" type = "text"><br><br>
 				</div>
 				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
+					<button type = "submit">Update</button>	
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
 
-<div class = "modal" id = "ServiceTeam_modal">
+<div class = "modal" id = "memo_modal">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
-			<form method="POST" action="/api/ServiceTeam">
+			<form method="POST" action="/api/setmemo" id="setmemo">
 				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
 				<div class = "modal-header">
 					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
+					<h4>Student Memo</h4>
 				</div>
 				<div class = "modal-body">
-					AssignDate: <input value = "{{obj.ServiceTeam.AssignDate}}" name = "AssignDate" type = "Date"><br><br>
-					Sales: <input value = "{{obj.ServiceTeam.Sales}}" name = "Sales" type = "text"><br><br>
-					Waiji: <input value = "{{obj.ServiceTeam.Waiji}}" name = "Waiji" type = "text"><br><br>
-					Celue: <input value = "{{obj.ServiceTeam.Celue}}" name = "Celue" type = "text"><br><br>
-					Wenshu: <input value = "{{obj.ServiceTeam.Wenshu}}" name = "Wenshu" type = "text"><br><br>
-					Liucheng: <input value = "{{obj.ServiceTeam.Liucheng}}" name = "Liucheng" type = "text"><br><br>
+					<label for="stumemo">Memo:</label>
+					<textarea class="form-control" id = "stumemo" rows="5" name = "stumemo" type = "text" form="setmemo" placeholder = "Enter memo here ..."></textarea>
 				</div>
 				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
+					<button type = "submit">Update</button>	
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
 
-<div class = "modal" id = "Score_modal">
+<div class = "modal" id = "changeStatus">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
-			<form method="POST" action="/api/Score">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
+			<div class = "modal-header">
+				<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
+				<h4>Change Status</h4>
+			</div>
+			<div class = "modal-body">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button" id="statusdropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select from following</button><span class="caret"></span>
+					<ul class="dropdown-menu" aria-labelledby="statusdropdown">
+						<li class="radio"><label><input type="radio" class="custom-control-input" id="reassignradio" name="statusRadios">Reassign</label></li>
+    					<li class="radio"><label><input type="radio" class="custom-control-input" id="boundradio" name="statusRadios">Bound</label></li>
+    					<li class="radio"><label><input type="radio" class="custom-control-input" id="declineradio" name="statusRadios">Decline</label></li>
+					</ul>
 				</div>
-				<div class = "modal-body">
-					Current Year: <input value = "{{obj.StuInfo.CurYear}}" name="CurYear" type = "year"><br><br>
-					Transcript: <input value = "{{obj.Score.Transcript}}" name = "Transcript" type = "file"><br><br>
-					ToeflScrs: L&nbsp;&nbsp;<input value = "{{obj.Score.ToeflScrs.L}}" name = "ToeflScrs_L" type = "text" style = "width:50px">&nbsp;&nbsp;S&nbsp;&nbsp;<input value = "{{obj.Score.ToeflScrs.S}}" name = "ToeflScrs_S" type = "text" style = "width:50px">&nbsp;&nbsp;R&nbsp;&nbsp;<input value = "{{obj.Score.ToeflScrs.R}}" name = "ToeflScrs_R" type = "text" style = "width:50px">&nbsp;&nbsp;W&nbsp;&nbsp;<input value = "{{obj.Score.ToeflScrs.W}}" name = "ToeflScrs_W" type = "text" style = "width:50px"><br><br>
-					IELTSScrs: <input value = "{{obj.Score.IELTSScrs}}" name = "IELTSScrs" type = "text" style = "width:50px"><br><br>
-					SATScrs: R&nbsp;&nbsp;<input value = "{{obj.Score.SATScrs.R}}" name = "SATScrs_R" type = "text" style = "width:50px">&nbsp;&nbsp;W&nbsp;&nbsp;<input value = "{{obj.Score.SATScrs.W}}" name = "SATScrs_W" type = "text" style = "width:50px">&nbsp;&nbsp;M&nbsp;&nbsp;<input value = "{{obj.Score.SATScrs.M}}" name = "SATScrs_M" type = "text" style = "width:50px">&nbsp;&nbsp;E&nbsp;&nbsp;<input value = "{{obj.Score.SATScrs.E}}" name = "SATScrs_E" type = "text" style = "width:50px"><br><br>
-					SAT2Scrs: 
-					<input value = "{{obj.Score.SAT2Scrs.Subject}}" name = "SAT2Scrs.Subject" type = "text">&nbsp;&nbsp;:&nbsp;&nbsp;<input value = "{{obj.Score.SAT2Scrs.Score}}" name = "SAT2Scrs.Score" type = "text" style = "width:50px"><br><br>
-					APScrs: <input value = "{{obj.Score.APScrs.Subject}}" name = "APScrs.Subject" type = "text">&nbsp;&nbsp;:&nbsp;&nbsp;<input value = "{{obj.Score.APScrs.Score}}" name = "APScrs.Score" type = "text" style = "width:50px"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div class = "modal" id = "InitEvl_modal">
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/InitEvl">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
-				</div>
-				<div class = "modal-body">
-					StuQues: <input value = "{{obj.InitEvl.StuQues}}" name = "StuQues" type = "file"><br><br>
-					ParQues: <input value = "{{obj.InitEvl.ParQues}}" name = "ParQues" type = "file"><br><br>
-					PostRep: <input value = "{{obj.InitEvl.PostRep}}" name = "PostRep" type = "file"><br><br>
-					DeepSkype: <input value = "{{obj.InitEvl.DeepSkype}}" name = "DeepSkype" type = "Date"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div class = "modal" id = "SchList_modal">
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/SchList">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
-				</div>
-				<div class = "modal-body">
-					School List: <input value = "{{#each obj.SchList}}{{this.Schools}}{{/each}}" name="Schools" type = "text"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div class = "modal" id = "Result_modal">	
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/Result">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
-				</div>
-				<div class = "modal-body">
-					{{#each obj.Results}}
-					<input value = "{{this.SchName}}" name="SchName" type = "hidden"></input>
-					{{this.SchName}}:<input value = "{{this.Result}}" name="Result" type = "text"><br><br>
+				<br>
+				<form id = "Reassignform" method="POST" action="/api/assignstu">
+					Assign {{obj.name}} to:
+					<select name = "liucheng" id = "liuChengSelection" form = "Reassignform" class="form-control">
+					{{#each allusers}}
+						<option value = "{{this.username}}">{{this.username}}</option>
 					{{/each}}
+					</select>
+					<input name = "stuid" value="{{obj._id}}" style = "display:none;" type = "text"><br>
+					<button class="btn btn-default" type = "submit">Update</button>	
+				</form>
+				<form id = "Boundform" method="POST" action="/api/bound">
+					{{obj.name}}<br>
+					<input value = "{{slug}}" name = "slug" type = "hidden"></input>
+					<button class="btn btn-success" type = "submit">Set to Bound</button>	
+				</form>
+				<form id = "Declineform" method="POST" action="/api/decline">
+					{{obj.name}}
+					<label for="declineReason">Declined Reason:</label>
+					<textarea class="form-control" id = "declineReason" rows="5" name = "declineReason" type = "text" form="addeventform" placeholder = "Enter reason here ..."></textarea>
+					<input value = "{{slug}}" name = "slug" type = "hidden"></input>
+					<button class="btn btn-default" type = "submit">Decline</button>	
+				</form>
+			</div>
+			<div class = "modal-footer">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class = "modal" id = "addevent">
+	<div class = "modal-dialog">
+		<div class = "modal-content">
+			<form id = "addeventform" method="POST" action="/api/addevent">
+				<div class = "modal-header">
+					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
+					<h4>Add Event</h4>
+				</div>
+				<div class = "modal-body">
+					<label>Date:&nbsp;</label><input name = "date" type = "date"><br>
+					<label for="evtMemo">Memo:</label>
+					<textarea class="form-control" id = "evtMemo" rows="5" name = "memo" type = "text" form="addeventform" placeholder = "Enter memo here ..."></textarea>
+					<input name = "stuid" value="{{obj._id}}" style = "display:none;" type = "text">
 				</div>
 				<div class = "modal-footer">
 					<button type = "submit">Create</button>	
@@ -327,72 +233,47 @@ h2 {
 	</div>
 </div>
 
-<div class = "modal" id = "Decision_modal">
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/Decision">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Decision</h4>
-				</div>
-				<div class = "modal-body">
-					Decision: <input value = "{{obj.Decision}}" name="Decision" type = "text"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div class = "modal" id = "Visa_modal">
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/Visa">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
-				</div>
-				<div class = "modal-body">
-					Visa: <input value = "{{obj.Visa}}" name="Visa" type = "text"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<div class = "modal" id = "Cancel_modal">
-	<div class = "modal-dialog">
-		<div class = "modal-content">
-			<form method="POST" action="/api/Decline">
-				<input value = "{{slug}}" name = "slug" type = "hidden"></input>
-				<div class = "modal-header">
-					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
-					<h4>Student Info</h4>
-				</div>
-				<div class = "modal-body">
-					Reason: <input value = "{{obj.DeclinedReason}}" name="DeclinedReason" type = "text"><br><br>
-				</div>
-				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+<style>
+.dropdown-menu > li.radio{
+	padding: 3px 20px;
+}
+</style>
 
 <script>
 $( document ).ready(function() {
-    var status = $("#Status").val();
+	console.log("ready")
+    var status = $("#status").val();
+    console.log(status);
     $('#'+status).css("font-size", "100%");
     $('#'+status).css("color", "black");
+    $("#Reassignform").hide()
+    $("#Boundform").hide()
+    $("#Declineform").hide()
+
+
+    $(".dropdown-menu").click(function(e){
+    	// e.stopPropagation();
+    	var res;
+    	if($("#reassignradio").prop("checked")) res = "Reassign";
+		if($("#boundradio").prop("checked")) res = "Bound";
+		if($("#declineradio").prop("checked")) res = "Decline";
+		console.log(res)
+		$("#statusdropdown").text(res)
+		$("#Reassignform").hide()
+    	$("#Boundform").hide()
+    	$("#Declineform").hide()
+		$("#" + res + "form").show()
+    })
+
 });
+
+
+var showmodal = function(e){
+	var table = $("#" + e);
+	console.log('show modal ' + e);
+	table.modal('show');
+}
+
 </script>
 
 

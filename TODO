@@ -1,0 +1,12 @@
+TODO
+
+	search on column - column().search()
+√	Event move to History after complete
+√	hide bounded
+√	show declined, unassigned, assigned
+√	db add student.memo
+
+	Unassigned -> assigned 	-> bounded
+						-> declined
+
+	bootstrap table sorting

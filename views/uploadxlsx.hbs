@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<h2>Upload Excel File</h2>
+
+<div class="row" id = "filerow">
+	<div class="col-xs-4">
+		<form class = "form-group" id = "form">
+			<label>File input</label>
+			<input type = "file" class = "form-control-file" id="inputfile" aria-describedby="fileHelp">
+			<small id = "fileHelp" class = "form-text text-muted"></small>
+		</form>
+		<button type = "button" class = "btn btn-default" id = "upload">Upload</button>
+	</div>
+</div>
+<div class = "row" id = "tablerow">
+	<div class="col-xs-12">
+		<div id="toolbar">
+            <div class="form-inline" role="form">
+            	<button type = "button" class = "btn btn-success" onclick="addData()">Add to Database</button>
+            	<button type = "button" class = "btn btn-default" onclick="removeRows()">Next Page</button>
+            </div>
+        </div>
+		<table class = "table table-striped" 
+				id = "duplicatetable" 
+				data-toggle = "table" 
+				data-toolbar="#toolbar" 
+				data-click-to-select = "true" 
+				data-show-columns="true"
+				data-pagination="true"
+				data-detail-view="true"
+				data-height="700">
+			<thead>
+			<tr>
+				<th data-field="state" data-checkbox="true"></th>
+				<th data-field="index" data-visible="false">Index</th>
+	    		<th data-field="name">Name</th>
+	    		<th data-field="tarSchYear">tarSchYear/Season</th>
+	    		<th data-field="email">Email</th>
+	    		<th data-field="liuCheng">流程顾问</th>
+				<th data-field="curSchool">CurSchool</th>
+				<th data-field="tel">Tel</th>
+				<th data-field="parName">ParName</th>
+				<th data-field="email">Email</th>
+				<th data-field="status">Status</th>
+	  		</tr>
+	  		</thead>
+	  		<tbody>
+	  		</tbody>
+		</table>
+	</div>
+</div>
+<br>
+
+
+<script>
+$(document).ready(function() {
+    console.log("dom ready!");
+    var username = "{{user.username}}"
+    $("#tablerow").hide()
+    $("#filerow").show()
+
+//onclicks
+    $('#upload').click(function(e){
+    	var fileName = $("#inputfile").val().split("\\").pop()
+    	// console.log(fileName);
+    	var ext = fileName.split('.').pop()
+    	// console.log(ext)
+    	if(ext.toLowerCase() != 'xlsx'){
+    		$("#fileHelp").text("Please Upload an Excel File.")
+    		alert("Please Upload an Excel File.")
+    	}
+    	else{
+    		var toUpload = $("#inputfile")[0].files[0];
+    		console.log(toUpload)
+    		var formData =  new FormData();
+    		formData.append('file', toUpload);
+			var uploadSuccess = function(data){
+    			console.log("success");
+    			console.log(data);
+    		}
+
+    		$.ajax({
+    			type: "POST",
+    			url: "/api/uploadxlsx/",
+    			data: formData,
+    			success: uploadSuccess,
+    			processData: false,
+    			contentType: false,
+    			// dataType: 'json',
+    			enctype: "multipart/form-data"
+    		})
+    		.done(function(data){
+    			// console.log(data);
+    			$("#tablerow").show()
+    			$("#filerow").hide()
+    			if(data.length > 0){
+    				var cnt = 0;
+    				data.forEach(function(e){
+    					$("#duplicatetable").bootstrapTable('append', formatStu(e, cnt));
+    					cnt = cnt + 1;
+    				})
+    			}
+    			else{
+    				alert("Upload Data Success")
+    				$.redirect("/allstudents", {}, "GET")
+    			}
+				console.log("done");
+    		})
+    		.fail(function(err){
+    			alert("fail");
+    			console.log(err.error)
+    		});
+    		
+
+    	}
+    });
+});
+</script>
+
+
+<script>
+$("#duplicatetable").on('expand-row.bs.table', function (e, index, row, $detail) {
+    $detail.html('Loading from ajax request...');
+    $.get("/api/getstuinfo/" + row.name + '/' + row.tel, function(data) {
+        $detail.html(format(data));
+    });
+});
+
+</script>
+<script>
+
+
+var addData = function(e){
+	var selections = $('#duplicatetable').bootstrapTable('getSelections');
+	if(selections.length == 0) alert("Please select more than One Student")
+	else{
+		console.log(selections);
+		$.post("/api/addstu/", {stu: selections}, function(data) {
+        	console.log(data)
+    	});
+		removeRows()
+	}
+}
+
+var removeRows = function(e){
+	var data = $('#duplicatetable').bootstrapTable('getData', true)	
+	console.log(data)
+	data.forEach(function(e){
+		$('#duplicatetable').bootstrapTable('remove', {field: 'index', values: [e.index]});
+	});
+	data = $('#duplicatetable').bootstrapTable('getData')	
+	if(data.length == 0){
+		alert("Upload Data Success")
+    	$.redirect("/allstudents", {}, "GET")
+	}
+}
+
+var showmodal = function(e){
+	var table = $("#" + e);
+	console.log('show modal ' + e);
+	table.modal('show');
+}
+
+function formatStu(d, idx) {
+    // `d` is the original data object for the row
+    return {
+            name: d.name, 
+            tarSchYear: d.stuInfo.tarSchYear, 
+            email: d.stuInfo.email, 
+            liuCheng: (d.serviceTeam ? d.serviceTeam.liuCheng : ""), 
+            curSchool: d.stuInfo.curSchool, 
+            tel: d.stuInfo.tel, 
+            parName: d.stuInfo.parName, 
+            email: d.stuInfo.email, 
+            status: d.status,
+            index: idx
+        };
+}
+
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Full name:</td>'+
+            '<td>'+d.name+'</td>'+
+            '<td>tarSchYear:</td>'+
+            '<td>'+d.stuInfo.tarSchYear+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>email:</td>'+
+            '<td>'+d.stuInfo.email+'</td>'+
+            '<td>流程顾问:</td>'+
+            '<td>'+(d.serviceTeam ? d.serviceTeam.liuCheng : "") +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>curSchool:</td>'+
+            '<td>'+d.stuInfo.curSchool+'</td>'+
+            '<td>parName:</td>'+
+            '<td>'+d.stuInfo.parName+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>status:</td>'+
+            '<td>'+d.status+'</td>'+
+            '<td>tel:</td>'+
+            '<td>'+d.stuInfo.tel+'</td>'+
+        '</tr>'+
+    '</table>';
+}
+</script>
+
