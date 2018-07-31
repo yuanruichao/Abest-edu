@@ -120,7 +120,7 @@ $(document).ready(function() {
 <script>
 $("#duplicatetable").on('expand-row.bs.table', function (e, index, row, $detail) {
     $detail.html('Loading from ajax request...');
-    $.get("/api/getstuinfo/" + row.name + '/' + row.tel, function(data) {
+    $.get("/api/getstuinfo?name=" + row.name + '&tel=' + row.tel, function(data) {
         $detail.html(format(data));
     });
 });
@@ -183,25 +183,25 @@ function format ( d ) {
             '<td>Full name:</td>'+
             '<td>'+d.name+'</td>'+
             '<td>tarSchYear:</td>'+
-            '<td>'+d.stuInfo.tarSchYear+'</td>'+
+            '<td>'+(d.stuInfo ? d.stuInfo.tarSchYear : "") +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>email:</td>'+
-            '<td>'+d.stuInfo.email+'</td>'+
+            '<td>'+(d.stuInfo ? d.stuInfo.email : "") +'</td>'+
             '<td>流程顾问:</td>'+
             '<td>'+(d.serviceTeam ? d.serviceTeam.liuCheng : "") +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>curSchool:</td>'+
-            '<td>'+d.stuInfo.curSchool+'</td>'+
+            '<td>'+(d.stuInfo ? d.stuInfo.curSchool : "") +'</td>'+
             '<td>parName:</td>'+
-            '<td>'+d.stuInfo.parName+'</td>'+
+            '<td>'+(d.stuInfo ? d.stuInfo.parName : "") +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>status:</td>'+
             '<td>'+d.status+'</td>'+
             '<td>tel:</td>'+
-            '<td>'+d.stuInfo.tel+'</td>'+
+            '<td>'+(d.stuInfo ? d.stuInfo.tel : "") +'</td>'+
         '</tr>'+
     '</table>';
 }

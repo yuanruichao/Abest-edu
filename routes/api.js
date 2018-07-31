@@ -225,19 +225,25 @@ router.post('/uploadxlsx', function(req, res, next) {
   	});
 });
 
-router.get('/getstuinfo/:name/:tel', function(req, res, next) {
+router.get('/getstuinfo/', function(req, res, next) {
 	console.log("within get /getstuinfo");
-	var params = req.params;
-	var id = req.params.id
-	var tel = req.params.tel
-	console.log(params);
+	var query = req.query;
+	var name = req.query.name
+	var tel = req.query.tel
+	console.log(query);
 
-	Student.findOne({$or:[ {'_id':id}, {'stuInfo.tel':tel}]}, function(err, stu, count) {
+	Student.findOne({$or:[ {'name':name}, {'stuInfo.tel':tel}]}, function(err, stu, count) {
+		if (err){
+			console.log(err);
+		}
 		if (stu == null) {
 			console.log("not found stu");
 			res.send('error')
 		}
-		else res.send(stu)
+		else{
+			console.log(stu)
+			res.send(stu)
+		}
   	});
 
 });
