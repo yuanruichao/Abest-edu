@@ -348,102 +348,45 @@ router.post('/decline', function(req, res, next) {
 	});
 });
 
-
-
-router.post('/sales', function(req, res, next) {
-	console.log('within post /sales');
-	console.log(smtpConfig);
-	var transporter = nodemailer.createTransport(smtpConfig);
-
-	var email_subject  = req.body.name + " pending " + req.body.amount;
-	var email_body = req.body.name + " pending " + req.body.amount;
-	var mailData = {
-	    from: 'alert@abest-edu.com',
-	    to: 'alert@abest-edu.com',
-	    subject: email_subject,
-	    text: email_body,
-	};
-
-	transporter.sendMail(mailData, function(err, info){
-		console.log("err = ", err);
-		console.log("info = ", info);
-	});
-
-	Student.findOne({name: req.body.name}, function(err, stu) {
-		console.log("stu = ", stu);
-		if(stu == null){
-			var s = new Student({
-				Name: req.body.name,
-				Amount: -req.body.amount,
-				Status: "pending"
-			});
-			s.save(function(err, stu, count) {
-    			res.redirect('/');
-  			});
-		}
-		else{
-			var tmpa = parseInt(stu.amount);
-			Student.update({Name: req.body.name}, {
-													Amount: tmpa - parseInt(req.body.amount),
-													Status: "Waiting " + (- tmpa + parseInt(req.body.amount))},
-												function(err){
-													res.redirect('/');
-												});
+router.post('/approveuser', function(req, res, next) {
+	console.log("within post /approveuser");
+	// console.log(req.body);
+	User.update({username : req.body.username}, {approved: true}, function(err) {
+		if(err)
+    		res.send(err)
+    	else {
+    		res.send('success')
 		}
 	});
 });
 
-
-router.post('/payment', function(req, res, next) {
-	console.log('within post /payment');
-	
-	var transporter = nodemailer.createTransport(smtpConfig);
-
-	var email_subject  = req.body.name + " received " + req.body.amount;
-	var email_body = req.body.name + " received " + req.body.amount;
-	var mailData = {
-	    from: 'alert@abest-edu.com',
-	    to: 'alert@abest-edu.com',
-	    subject: email_subject,
-	    text: email_body,
-	};
-
-	transporter.sendMail(mailData, function(err, info){
-		console.log("err = ", err);
-		console.log("info = ", info);
+router.get('/getapprovedusers', function(req, res, next) {
+	console.log("within get /getapprovedusers");
+	// console.log(req.body);
+	User.find(function(err, user, count){
+		Approved = user.filter(function(e){
+			if(!e.approved) return false;
+			return true;
+		})
+		res.send(Approved);
 	});
+});
 
-	Student.findOne({name: req.body.name}, function(err, stu) {
-		console.log(stu);
-		var tmpa = parseInt(stu.amount); 
-		var aleft = tmpa + parseInt(req.body.amount);
-		if(aleft == 0){
-			Student.update({name: req.body.name}, {
-													Amount: 0,
-													Status: "Need Follow Up"
-												},
-												function(err){
-													res.redirect('/');
-												});
-		}else{
-			Student.update({name: req.body.name}, {
-													Amount: aleft,
-													Status: "Waiting " + aleft.toString()
-												},
-												function(err){
-													res.redirect('/');
-												});
+router.post('/modifyisadmin', function(req, res, next) {
+	console.log("within post /modifyisAdmin");
+	// console.log(req.body);
+	User.update({username : req.body.pk}, {isAdmin: req.body.value}, function(err) {
+		if(err)
+    		res.send('failed')
+    	else {
+    		res.send('success')
 		}
-    	
-  	});
-	
+	});
 	
 });
+
 
 module.exports = router;
-
-
-
 
 
 

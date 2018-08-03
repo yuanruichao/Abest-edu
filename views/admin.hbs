@@ -1,1 +1,87 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="/stylesheets/bootstrap-editable.css">
+<script src="/js/bootstrap-table-editable.js"></script>
+<script src="/js/bootstrap-editable.js"></script>
+<div class="row">
+
+<div class="col-xs-10">
+<div class = "panel panel-default">
+	<div class = "panel-heading">All Users</div>
+	<div class = "panel-body">
+		<div id="toolbar">
+            <div class="form-inline" role="form">
+            </div>
+        </div>
+		<table class = "table table-striped" 
+				id = "usertable" 
+				data-toggle = "table" 
+				data-search = "true" 
+				data-toolbar="#toolbar" 
+				data-click-to-select = "true" 
+				data-sort-order = "asc" 
+				data-show-columns="true"
+				data-pagination="true">
+			<thead>
+			<tr>
+	    		<th data-field="name" data-sortable = "true">Name</th>
+	    		<th data-field="isAdmin" data-sortable = "true">isAdmin</th>
+	  		</tr>
+	  		</thead>
+	  		<tbody>
+	  		{{#each allusers}}
+    		<tr>
+    			<td><a href = "/user/{{this.username}}">{{this.name}}</a></td>
+    			<td><a id = "isAdmin{{this.username}}">{{this.isAdmin}}<a></td>
+    		</tr>
+	  		{{/each}}
+	  		</tbody>
+		</table>
+	</div>
+	
+</div>
+</div>
+<div class="col-xs-2">
+<div class = "panel panel-default">
+	<div class = "panel-heading">Waiting to Approve</div>
+	<div class = "panel-body">
+		{{#each waitApprove}}
+		<ul class="list-group">
+			<li class="list-group-item">{{this.name}}<button class="btn btn-success" type = "button" id = "btn{{this.username}}" onclick="approveUser('{{this.username}}');" >Approve</button></li>
+		{{/each}}
+	</div>
+</div>
+</div>
+</div>
+<script>
+$(document).ready(function() {
+    console.log("dom ready!");
+    $.get("/api/getapprovedusers/", function(data) {
+		console.log("success");
+		console.log(data);
+		data.forEach(function(e){
+			$("#isAdmin" + e.username).editable({
+				type: "select",
+				source:[
+					{value: "true", text: "true"},
+					{value: "false", text :"false"}
+				],
+				pk: e.username,
+				value: "" + e.isAdmin,
+				url: '/api/modifyisadmin'
+			});
+		})
+	})
+    // $("#isAdminuser2").editable();
+
+});
+var approveUser = function(e){
+	console.log(e)
+	$.post("api/approveuser", {username: e}, function(data){
+  		console.log(data)
+	});
+}
+</script>
+
+
+
+

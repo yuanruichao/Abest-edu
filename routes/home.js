@@ -21,7 +21,7 @@ router.post('/login', function(req,res,next) {
     if(user) {
       	req.logIn(user, function(err) {
       		console.log("login success!")
-        	res.redirect('/user');
+        	res.redirect('/user/' + user.username);
     	});
     } else {
     	if(err) res.render('error', {message: "Login error.", error: err});
@@ -35,7 +35,11 @@ router.get('/register', function(req, res, next) {
 });
 
 router.post('/register', function(req, res) {
-	User.register(new User({username:req.body.username, name: req.body.name}), 
+	User.register(new User({username:req.body.username, 
+                          name: req.body.name,
+                          approved: false,
+                          isAdmin: false,
+                          roles: 0}), 
     	req.body.password, function(err, user){
     	if (err) {
       		console.log(err);

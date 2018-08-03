@@ -11,23 +11,40 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.get('/user', function(req, res, next) {
-	Student.find({"serviceTeam.liuCheng" : res.locals.user.username}, function(err, stu, count){
-		res.render('user', {stu: stu, user: res.locals.user});
-	});
+router.get('/user/:slug', function(req, res, next) {
+	var slug = req.params.slug;
+	if(slug != res.locals.user.username && !res.locals.user.isAdmin){
+		res.render('error', {message: "DO NOT STALK YOUR FRIEND"})
+	}
+	else{
+		User.findOne({username: slug}, function(err, user, count){
+			Student.find({"serviceTeam.liuCheng" : user.username}, function(err, stu, count){
+				res.render('user', {stu: stu, user: user});
+			});
+		});
+	}
 	
 });
 
-router.get('/sales', function(req, res, next) {
-	Student.find(function(err, stu, count){
-		res.render('sales', { obj: stu });
+router.get('/admin', function(req, res, next) {
+	if(!res.locals.user.isAdmin){
+		res.render('error', {message: "Page Not Found"})
+	}
+	else{
+	User.find(function(err, user, count){
+		waitApprove = user.filter(function(e){
+			if(!e.approved) return true;
+			return false;
+		})
+		Approved = user.filter(function(e){
+			if(!e.approved) return false;
+			return true;
+		})
+		console.log(res.locals.user)
+		res.render('admin', {user: res.locals.user, allusers: Approved, waitApprove: waitApprove});
 	});
-});
-
-router.get('/payment', function(req, res, next) {
-	Student.find(function(err, stu, count){
-		res.render('payment', { obj: stu });
-	});
+	}
+	
 });
 
 router.get('/allstudents', function(req, res, next) {

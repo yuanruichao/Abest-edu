@@ -31,7 +31,7 @@
        		<li><a href="/allstudents">All Students</a></li>
     	</ul>
     	<ul class="nav navbar-nav navbar-right">
-       		<li><a href="/admin">Admin</a></li>
+       		{{#if user.isAdmin}}<li><a href="/admin">Admin</a></li>{{/if}}
        		<li><a href="/uploadxlsx">Upload</a></li>
        		<li><a href="/user">User</a></li>
     	</ul>

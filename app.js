@@ -43,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist/')); // redirect popper js
 app.use('/js', express.static(__dirname + '/node_modules/popper.js/dist/umd/')); // redirect popper js
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap-table/dist/extensions/editable')); // redirect bootstrap-table
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap-table/dist/')); // redirect bootstrap-table
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap-table/dist')); // redirect CSS bootstrap
@@ -65,6 +66,14 @@ app.use(function(req, res, next){
 
   console.log("not logedin");
   res.redirect('/login');
+
+});
+
+app.use(function(req, res, next){
+  if(req.user.approved) return next();
+
+  console.log("not approved");
+  res.render('error', {message: "Please wait administrator for approval!"});
 
 });
 
