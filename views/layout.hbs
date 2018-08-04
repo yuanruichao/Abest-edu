@@ -33,7 +33,7 @@
     	<ul class="nav navbar-nav navbar-right">
        		{{#if user.isAdmin}}<li><a href="/admin">Admin</a></li>{{/if}}
        		<li><a href="/uploadxlsx">Upload</a></li>
-       		<li><a href="/user">User</a></li>
+       		<li><a href="/user/{{user.username}}">User</a></li>
     	</ul>
     </div><!-- /.navbar-collapse -->
   	</div><!-- /.container-fluid -->
