@@ -220,6 +220,7 @@ router.post('/uploadxlsx', function(req, res, next) {
         			res.send(duplicates)
       			}
     		});
+    		fs.unlinkSync(savePath);
 			
 		});
   	});
