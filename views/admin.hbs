@@ -76,9 +76,7 @@ $(document).ready(function() {
 });
 var approveUser = function(e){
 	console.log(e)
-	$.post("api/approveuser", {username: e}, function(data){
-  		console.log(data)
-	});
+	$.redirect("api/approveuser", {username: e});
 }
 </script>
 

@@ -354,9 +354,9 @@ router.post('/approveuser', function(req, res, next) {
 	// console.log(req.body);
 	User.update({username : req.body.username}, {approved: true}, function(err) {
 		if(err)
-    		res.send(err)
+    		res.render(err, {message: 'err', error: err})
     	else {
-    		res.send('success')
+    		res.redirect('/admin')
 		}
 	});
 });
