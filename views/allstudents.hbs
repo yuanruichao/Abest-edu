@@ -6,7 +6,7 @@
 		<div id="toolbar">
             <div class="form-inline" role="form">
             	<button type = "button" class = "btn btn-default" onclick = "showmodal('addstu');">New Student</button>
-            	<button type = "button" class = "btn btn-default" onclick = "getselection();">Assign Student(s)</button>
+            	{{#if user.isAdmin}}<button type = "button" class = "btn btn-default" onclick = "getselection();">Assign Student(s)</button>{{/if}}
             	<div class="form-check" style = "display: inline">
     				<input type="checkbox" class="form-check-input" id="showmystu">
     				<label class="form-check-label" for="showmystu">Only My Student(s)</label>
@@ -102,6 +102,7 @@
 	</div>
 </div>
 
+{{#if user.isAdmin}}
 <div class = "modal" id = "assignstu">
 	<div class = "modal-dialog">
 		<div class = "modal-content">
@@ -126,7 +127,7 @@
 		</div>
 	</div>
 </div>
-
+{{/if}}
 
 <style>
 .dropdown-menu > li.checkbox{

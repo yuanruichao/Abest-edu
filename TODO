@@ -12,5 +12,6 @@ TODO
 	bootstrap table sorting
 	History table
 	Data validation e.g. register, stuInfo update ...
-	user role
+N/A	user role
 √	admin page
+	admin unable to assign stu

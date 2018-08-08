@@ -63,17 +63,21 @@ router.post('/newstu', function(req, res, next) {
 router.post('/assignstu', function(req, res, next) {
 	console.log("within post /assignstu");
 	// console.log(req.body);
+	if(!res.locals.user.isAdmin){
+		res.render('error', {message: "Page Not Found"})
+	}
+	else{
+		var toUpdate = req.body.stuid.split(',');
+		var liuCheng = req.body.liucheng;
 
-	var toUpdate = req.body.stuid.split(',');
-	var liuCheng = req.body.liucheng;
-
-	Student.update({_id: {$in: toUpdate}}, {$set:{"serviceTeam.liuCheng":liuCheng, status: "assigned"}}, {"multi": true}, function(err) {
-		if(err)
-    		res.render("error", {message : "Update Error", error : err});
-    	else {
-    		res.redirect('/allstudents');
-		}
-	});
+		Student.update({_id: {$in: toUpdate}}, {$set:{"serviceTeam.liuCheng":liuCheng, status: "assigned"}}, {"multi": true}, function(err) {
+			if(err)
+    			res.render("error", {message : "Update Error", error : err});
+    		else {
+    			res.redirect('/allstudents');
+			}
+		});
+	}
 });
 
 router.post('/addevent', function(req, res, next) {
