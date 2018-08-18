@@ -20,7 +20,7 @@ router.post('/login', function(req,res,next) {
   passport.authenticate('local', function(err,user) {
     if(user) {
       	req.logIn(user, function(err) {
-      		console.log("login success!")
+      		console.log(user.username + " login success!")
         	res.redirect('/user/' + user.username);
     	});
     } else {

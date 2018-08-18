@@ -40,6 +40,7 @@ app.use(cookieParser());
 app.use(fileUpload());
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploadFiles')));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist/')); // redirect popper js
 app.use('/js', express.static(__dirname + '/node_modules/popper.js/dist/umd/')); // redirect popper js
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
@@ -64,7 +65,7 @@ app.use('/', home);
 app.use(function(req, res, next){
   if(req.user) return next();
 
-  console.log("not logedin");
+  // console.log("not logedin");
   res.redirect('/login');
 
 });
@@ -72,7 +73,7 @@ app.use(function(req, res, next){
 app.use(function(req, res, next){
   if(req.user.approved) return next();
 
-  console.log("not approved");
+  // console.log("not approved");
   res.render('error', {message: "Please wait administrator for approval!"});
 
 });

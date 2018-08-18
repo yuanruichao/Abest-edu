@@ -1,6 +1,6 @@
 TODO
 
-	search on column - column().search()
+x	search on column - column().search()
 √	Event move to History after complete
 √	hide bounded
 √	show declined, unassigned, assigned
@@ -9,9 +9,9 @@ TODO
 √	Unassigned -> assigned 	-> bounded
 						-> declined
 
-	bootstrap table sorting
+?	bootstrap table sorting
 	History table
 	Data validation e.g. register, stuInfo update ...
 N/A	user role
 √	admin page
-	admin unable to assign stu
+√	admin unable to assign stu

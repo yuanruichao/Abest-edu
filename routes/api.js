@@ -49,7 +49,7 @@ router.post('/newstu', function(req, res, next) {
 		status: "unassigned"
 	});
 
-	console.log("new Stu:\n", s);
+	console.log(res.user.username, "added new Stu:\n", s);
 	s.save(function(err, stu, count) {
 		
     	if(err) res.render("error", {message : "Save Error", error : err});
@@ -74,6 +74,7 @@ router.post('/assignstu', function(req, res, next) {
 			if(err)
     			res.render("error", {message : "Update Error", error : err});
     		else {
+    			console.log(res.user.username + " assigned " + req.body.stuid + " to " + liuCheng);
     			res.redirect('/allstudents');
 			}
 		});
@@ -92,12 +93,13 @@ router.post('/addevent', function(req, res, next) {
 		date: date,
 		memo: memo
 	})
-	console.log(stuid)
+	// console.log(stuid)
 	// console.log("findOneAndUpdate({_id:"+stuid+"}, {$set:{\"events\":toAdd}}")
 	Student.findOneAndUpdate({_id:stuid}, {$push:{"stuEvents":toAdd}}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
+    		console.log(res.user.username + " add " + date + ", " + memo + " to " + stuid);
     		res.redirect('/allstudents');
 		}
 	});
@@ -127,7 +129,7 @@ router.get('/getevents/:slug', function(req, res, next) {
 					arr.push(tmp);
 				})
 			})
-			console.log(arr);
+			// console.log(arr);
 			arr.sort(function(a, b){return a.date - b.date});
 			res.send(arr);
 		}
@@ -138,19 +140,20 @@ router.post('/completeevent', function(req, res, next) {
 	console.log("within post /completeevent");
 
 	var stuId = req.body.stuId;
-	console.log(stuId);
+	// console.log(stuId);
 	var id = req.body.id;
-	console.log(id);
+	// console.log(id);
 	// console.log(req.body);
 	Student.findOne({"_id": stuId}, function(err, stu, count){
-		console.log(stu);
+		// console.log(stu);
 		stueve = stu.stuEvents.filter(function(e){return e._id == id});
-		console.log(stueve)
+		// console.log(stueve)
 		Student.findOneAndUpdate({_id:stuId}, {$push:{"historyEvents":stueve[0]}}, function(err){
 			Student.update({"_id": stuId}, {$pull:{stuEvents:{"_id": id}}}, function(err){
 				if(err)
     				res.render("error", {message : "Update Error", error : err});
     			else {
+    				console.log(res.user.username + " complete event " + req.body.stuId + " eventId: " + id);
     				res.redirect('/user');
 				}
 			});
@@ -163,10 +166,10 @@ router.post('/uploadxlsx', function(req, res, next) {
 	console.log("within post /uploadxlsx");
 	// console.log(req.files)
 	// console.log(__dirname);
-
+	var fName = req.files.file.name + "_"
 	var savePath = __dirname.substring(0, __dirname.lastIndexOf(path.sep))
-	savePath = path.join(savePath, 'uploadFiles', req.files.file.name)
-	console.log(savePath)
+	savePath = path.join(savePath, 'uploadFiles', fName)
+	// console.log(savePath)
 
 	req.files.file.mv(savePath, function(err) {
     	if (err) return res.status(500).send(err);
@@ -184,35 +187,56 @@ router.post('/uploadxlsx', function(req, res, next) {
 				// if(i > 0) break;
 				var sname = workbook.SheetNames[i]
 				var sheet = workbook.Sheets[sname]
-				var j = 3
-				while(sheet['A' + j]){
+				var alpha = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
+				var colName = 'Z'
+				var colTarSchYear = 'Z'
+				var colCurSchool = 'Z'
+				var colParName = 'Z'
+				var colTel = 'Z'
+				var colEmail = 'Z'
+				var colStuSource = 'Z'
+				var colMemo = 'Z'
+				for(var k = 0; k < 11; k++){
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "学生姓名") colName = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "申请界别") colTarSchYear = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "所在学校") colCurSchool = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "家长姓名") colParName = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "手机号码") colTel = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "邮箱/微信") colEmail = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "来源") colStuSource = alpha[k];
+					if(sheet[alpha[k] + '2'] && sheet[alpha[k] + '2'].v == "备注") colMemo = alpha[k];
+				}
+				var row = 3
+				while(sheet['A' + row]){
 					cur = {}
-					// console.log(sname + " row " + j)
-					// console.log(sheet['B' + j].v)
+					
+					var colCurSchool
 					var si  = {
-						curSchool : (sheet['E' + j] ? sheet['E' + j].v : ""),
-						tel : (sheet['G' + j] ? sheet['G' + j].v : ""),
-						parName : (sheet['F' + j] ? sheet['F' + j].v : ""),
-						email : (sheet['H' + j] ? sheet['H' + j].v : ""),
+						curSchool : (sheet[colCurSchool + row] ? sheet[colCurSchool + row].v : ""),
+						tel : (sheet[colTel + row] ? sheet[colTel + row].v : ""),
+						parName : (sheet[colParName + row] ? sheet[colParName + row].v : ""),
+						email : (sheet[colEmail + row] ? sheet[colEmail + row].v : ""),
 						division: "上海",
-						tarSchYear : (sheet['D' + j] ? sheet['D' + j].v : ""),
-						stuSource : (sheet['I' + j] ? sheet['I' + j].v : "")
+						tarSchYear : (sheet[colTarSchYear + row] ? sheet[colTarSchYear + row].v : ""),
+						stuSource : (sheet[colStuSource + row] ? sheet[colStuSource + row].v : "")
 					}
 					var cur = {
-						name : (sheet['B' + j] ? sheet['B' + j].v : ""),
+						name : (sheet[colName + row] ? sheet[colName + row].v : ""),
 						stuInfo: si,
+						memo: (sheet[colMemo + row] ? sheet[colMemo + row].v : ""),
+						uploadedBy: res.user.username,
 						status: "unassigned"
 					}
-					if(sheet['B' + j] && stuNames.includes(sheet['B' + j].v)|| 
-						sheet['G' + j] && stuTels.includes(sheet['G' + j].v)){
+					if(sheet[colName + row] && stuNames.includes(sheet[colName + row].v)|| 
+						sheet[colTel + row] && stuTels.includes(sheet[colTel + row].v)){
 						duplicates.push(cur);
 					}
 					else{
-						stuNames.push(sheet['B' + j] ? sheet['B' + j].v : "")
-						stuTels.push(sheet['G' + j] ? sheet['G' + j].v : "")
+						stuNames.push(sheet[colName + row] ? sheet[colName + row].v : "")
+						stuTels.push(sheet[colTel + row] ? sheet[colTel + row].v : "")
 						doc.push(cur);
 					}
-					j = j + 1;
+					row = row + 1;
 					
 				}
 			}
@@ -221,6 +245,7 @@ router.post('/uploadxlsx', function(req, res, next) {
           			console.error(err);
           			res.send(err);
       			} else {
+      				console.log(res.user.username + " uploaded " + doc.length + " students");
         			res.send(duplicates)
       			}
     		});
@@ -235,7 +260,7 @@ router.get('/getstuinfo/', function(req, res, next) {
 	var query = req.query;
 	var name = req.query.name
 	var tel = req.query.tel
-	console.log(query);
+	// console.log(query);
 
 	Student.findOne({$or:[ {'name':name}, {'stuInfo.tel':tel}]}, function(err, stu, count) {
 		if (err){
@@ -246,7 +271,7 @@ router.get('/getstuinfo/', function(req, res, next) {
 			res.send('error')
 		}
 		else{
-			console.log(stu)
+			// console.log(stu)
 			res.send(stu)
 		}
   	});
@@ -273,6 +298,7 @@ router.post('/addstu', function(req, res, next) {
 			name : e.name,
 			stuInfo: si,
 			serviceTeam: st,
+			uploadedBy: res.user.username
 			status: "unassigned"
 		}
 		doc.push(cur);		
@@ -282,6 +308,7 @@ router.post('/addstu', function(req, res, next) {
       		console.error(err);
       		res.send(err);
    		} else {
+   			console.log(res.user.username + " created one student");
     		res.send('success')
    		}
 	});
@@ -310,6 +337,7 @@ router.post('/StuInfo', function(req, res, next) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
+    		console.log(res.user.username + " updated student " + req.body.slug);
     		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
@@ -323,6 +351,7 @@ router.post('/setmemo', function(req, res, next) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
+    		console.log(res.user.username + " set memo " + req.body.slug + ": " + req.body.stumemo);
     		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
@@ -336,6 +365,7 @@ router.post('/bound', function(req, res, next) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
+    		console.log(res.user.username + " set " + req.body.slug + "to bounded");
     		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
@@ -348,6 +378,7 @@ router.post('/decline', function(req, res, next) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
+    		console.log(res.user.username + " set " + req.body.slug + "to decline");
     		res.redirect(303, '/stu/' + req.body.slug);
 		}
 	});
@@ -360,6 +391,7 @@ router.post('/approveuser', function(req, res, next) {
 		if(err)
     		res.render(err, {message: 'err', error: err})
     	else {
+    		console.log(res.user.username + " approved " + req.body.username);
     		res.redirect('/admin')
 		}
 	});
@@ -383,7 +415,8 @@ router.post('/modifyisadmin', function(req, res, next) {
 	User.update({username : req.body.pk}, {isAdmin: req.body.value}, function(err) {
 		if(err)
     		res.send('failed')
-    	else {
+    	else {	
+    		console.log(res.user.username + " set " + req.body.pk + "admin to " + req.body.value);
     		res.send('success')
 		}
 	});

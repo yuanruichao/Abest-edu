@@ -40,7 +40,7 @@ router.get('/admin', function(req, res, next) {
 			if(!e.approved) return false;
 			return true;
 		})
-		console.log(res.locals.user)
+		// console.log(res.locals.user)
 		res.render('admin', {user: res.locals.user, allusers: Approved, waitApprove: waitApprove});
 	});
 	}
@@ -57,7 +57,7 @@ router.get('/allstudents', function(req, res, next) {
 
 router.get('/stu/:slug', function(req, res, next) {
 	var slug = req.params.slug;
-	console.log(slug);
+	// console.log(slug);
 	Student.findOne({slug : slug}, function(err, stu, count) {
 		if (stu == null) {
 			console.log("not found stu");

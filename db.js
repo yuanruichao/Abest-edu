@@ -60,7 +60,7 @@ var Student = new mongoose.Schema({
 	historyEvents: [stuEvent],
 
 	memo: String,
-
+	uploadedBy: String,
 	declinedReason: String
 	// Status: String,
 	// Score: Score,
