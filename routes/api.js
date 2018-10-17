@@ -298,7 +298,7 @@ router.post('/addstu', function(req, res, next) {
 			name : e.name,
 			stuInfo: si,
 			serviceTeam: st,
-			uploadedBy: res.user.username
+			uploadedBy: res.user.username,
 			status: "unassigned"
 		}
 		doc.push(cur);		
