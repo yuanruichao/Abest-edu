@@ -149,10 +149,10 @@ mongoose.model('Student', Student);
 
 
 
-var url = "mongodb://user:"+ process.env.dbpassword +"@ds037244.mongolab.com:37244/abestapi";
-mongoose.connect(url);
+// var url = "mongodb://user:"+ process.env.dbpassword +"@ds037244.mongolab.com:37244/abestapi";
+// mongoose.connect(url);
 // mongo ds037244.mlab.com:37244/abestapi -u user -p <dbpassword>
-// mongoose.connect('mongodb://localhost/abest');
+mongoose.connect('mongodb://localhost/abest');
 
 
 
