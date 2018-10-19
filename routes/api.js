@@ -391,7 +391,7 @@ router.post('/approveuser', function(req, res, next) {
 		if(err)
     		res.render(err, {message: 'err', error: err})
     	else {
-    		console.log(res.user.username + " approved " + req.body.username);
+    		console.log(res.user.name + " approved " + req.body.username);
     		res.redirect('/admin')
 		}
 	});
@@ -416,7 +416,7 @@ router.post('/modifyisadmin', function(req, res, next) {
 		if(err)
     		res.send('failed')
     	else {	
-    		console.log(res.user.username + " set " + req.body.pk + "admin to " + req.body.value);
+    		console.log(res.user.name + " set " + req.body.pk + "admin to " + req.body.value);
     		res.send('success')
 		}
 	});
