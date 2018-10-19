@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/user/:slug', function(req, res, next) {
 	var slug = req.params.slug;
-	if(slug != res.locals.user.username && !res.locals.user.isAdmin){
+	if(slug != res.user.username && !res.user.isAdmin){
 		res.render('error', {message: "DO NOT STALK YOUR FRIEND"})
 	}
 	else{
@@ -27,7 +27,7 @@ router.get('/user/:slug', function(req, res, next) {
 });
 
 router.get('/admin', function(req, res, next) {
-	if(!res.locals.user.isAdmin){
+	if(!res.user.isAdmin){
 		res.render('error', {message: "Page Not Found"})
 	}
 	else{
@@ -41,7 +41,7 @@ router.get('/admin', function(req, res, next) {
 			return true;
 		})
 		// console.log(res.locals.user)
-		res.render('admin', {user: res.locals.user, allusers: Approved, waitApprove: waitApprove});
+		res.render('admin', {user: res.user, allusers: Approved, waitApprove: waitApprove});
 	});
 	}
 	
@@ -50,7 +50,7 @@ router.get('/admin', function(req, res, next) {
 router.get('/allstudents', function(req, res, next) {
 	Student.find(function(err, stu, count){
 		User.find(function(err, user, count){
-			res.render('allstudents', {obj: stu, user: res.locals.user, allusers: user});
+			res.render('allstudents', {obj: stu, user: res.user, allusers: user});
 		});
 	});
 });
