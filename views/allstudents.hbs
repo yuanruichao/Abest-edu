@@ -6,7 +6,8 @@
 		<div id="toolbar">
             <div class="form-inline" role="form">
             	<button type = "button" class = "btn btn-default" onclick = "showmodal('addstu');">New Student</button>
-            	{{#if user.isAdmin}}<button type = "button" class = "btn btn-default" onclick = "getselection();">Assign Student(s)</button>{{/if}}
+            	{{#if user.isAdmin}}<button type = "button" class = "btn btn-default" onclick = "btnassignstu();">Assign Student(s)</button>{{/if}}
+            	{{#if user.isAdmin}}<button type = "button" class = "btn btn-default" onclick = "btndeletestu();">Delete Student(s)</button>{{/if}}
             	<div class="form-check" style = "display: inline">
     				<input type="checkbox" class="form-check-input" id="showmystu">
     				<label class="form-check-label" for="showmystu">Only My Student(s)</label>
@@ -112,16 +113,39 @@
 					<h4>Assign a Student</h4>
 				</div>
 				<div class = "modal-body">
-					Assign <p id="selectedstuname">a</p> to:
+					Assign <p id="assignstuname"></p> to:
 					<select name = "liucheng" id = "liuChengSelection" form = "assignstuform">
 						{{#each allusers}}
 						<option value = "{{this.username}}">{{this.username}}</option>
 						{{/each}}
 					</select>
-					<input name = "stuid" id = "selectedstuid" style = "display:none;" type = "text">
+					<input name = "stuid" id = "assignstuid" style = "display:none;" type = "text">
 				</div>
 				<div class = "modal-footer">
-					<button type = "submit">Create</button>	
+					<button type = "submit">Assign</button>	
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{/if}}
+
+{{#if user.isAdmin}}
+<div class = "modal" id = "deletestu">
+	<div class = "modal-dialog">
+		<div class = "modal-content">
+			<form id = "deletestuform" method="POST" action="/api/deletestu">
+				<div class = "modal-header">
+					<button type = "button" class = "close" data-dismiss = "modal"><span>&times;</span><span class = "sr-only">Close</span></button>
+					<h4>Assign a Student</h4>
+				</div>
+				<div class = "modal-body">
+					Confirm to delete <p id="deletestuname"></p>
+					</select>
+					<input name = "stuid" id = "deletestuid" style = "display:none;" type = "text">
+				</div>
+				<div class = "modal-footer">
+					<button type = "submit">Delete</button>	
 				</div>
 			</form>
 		</div>
@@ -184,22 +208,41 @@ var showmodal = function(e){
 	table.modal('show');
 }
 
-var getselection = function(e){
+var btnassignstu = function(e){
 	var selections = $('#stutable').bootstrapTable('getSelections');
 	if(selections.length == 0) alert("Please select more than One Student")
 	else{
 		showmodal('assignstu');
-		$('#selectedstuname').text("");
-		$('#selectedstuid').val("");
+		$('#assignstuname').text("");
+		$('#assignstuid').val("");
 		selections.forEach(function(e){
 			var str = $(e.name).text();
 			var ids = e.id
 			// console.log(str)
-			$('#selectedstuname').append(str + ', ');
-			$('#selectedstuid').val($('#selectedstuid').val() + ids + ',');
+			$('#assignstuname').append(str + ', ');
+			$('#assignstuid').val($('#assignstuid').val() + ids + ',');
 		})
-		$('#selectedstuname').text($('#selectedstuname').text().slice(0, -2));
-		$('#selectedstuid').val($('#selectedstuid').val().slice(0, -1));
+		$('#assignstuname').text($('#assignstuname').text().slice(0, -2));
+		$('#assignstuid').val($('#assignstuid').val().slice(0, -1));
+	}
+}
+
+var btndeletestu = function(e){
+	var selections = $('#stutable').bootstrapTable('getSelections');
+	if(selections.length == 0) alert("Please select more than One Student")
+	else{
+		showmodal('deletestu');
+		$('#deletestuname').text("");
+		$('#deletestuid').val("");
+		selections.forEach(function(e){
+			var str = $(e.name).text();
+			var ids = e.id
+			// console.log(str)
+			$('#deletestuname').append(str + ', ');
+			$('#deletestuid').val($('#deletestuid').val() + ids + ',');
+		})
+		$('#deletestuname').text($('#deletestuname').text().slice(0, -2));
+		$('#deletestuid').val($('#deletestuid').val().slice(0, -1));
 	}
 }
 
