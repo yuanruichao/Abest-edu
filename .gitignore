@@ -3,4 +3,4 @@ config/*
 npm-debug.log
 *.sublime-project
 *.sublime-workspace
-uploadFIles/*
+uploadFiles/*
