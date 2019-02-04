@@ -43,8 +43,9 @@
 	    		<th data-field="parName" data-sortable = "true">parName</th>
 	    		<th data-field="tel" data-sortable = "true">tel</th>
 	    		<th data-field="email" data-sortable = "true">Email</th>
-	    		<th data-field="stuSource" data-sortable = "true">stuSource</th>
+	    		<th data-field="stuSource" data-sortable = "true">来源</th>
 	    		<th data-field="division" data-sortable = "true">division</th>
+	    		<th data-field="recentEvent">mostRecentEvent</th>
 	    		<th data-field="memo">memo</th>
 	    		<th data-field="id" data-visible="false">_id</th>
 	  		</tr>
@@ -53,7 +54,13 @@
 	  		{{#each obj}}
     		<tr>
     			<td></td>
-    			<td><a href = "/stu/{{this.slug}}">{{this.name}}</a></td>
+    			<td><a href = "/stu/{{this.slug}}">
+    				{{#if this.name}}
+    					{{this.name}}
+    				{{else}}
+    					点击查看
+    				{{/if}}
+    			</a></td>
     			<td>{{this.status}}</td>
     			<td>{{this.serviceTeam.liuCheng}}</td>
 				<td>{{this.stuInfo.tarSchYear}}</td>
@@ -63,6 +70,7 @@
 				<td>{{this.stuInfo.email}}</td>
 				<td>{{this.stuInfo.stuSource}}</td>
 				<td>{{this.stuInfo.division}}</td>
+				<td><p class = 'tdMostRecentEvents' stuid = '{{this.id}}'></p></td>
 				<td>{{this.memo}}</td>
 				<td>{{this.id}}</td>
     		</tr>
@@ -184,9 +192,20 @@ $( document ).ready(function() {
 		filterTable("status", res)
     })
 
+    // Set student filter
     $("#unassignedfilter").prop("checked", true)
     $("#assignedfilter").prop("checked", true)
     filterTable("status", ["unassigned", "assigned"])
+
+    // Retrive most recent id
+    var mostRecentEvents = $('.tdMostRecentEvents');
+    mostRecentEvents.each(function() {
+    	var stuid = this.getAttribute('stuid')
+    	var mostRecentEvent = this;
+    	$.get("/api/getmostrecentevent?stuid=" + stuid, function(data) {
+        	mostRecentEvent.append(data[0] + ": " + data[1])
+        });
+    });
 });
 </script>
 
@@ -247,5 +266,6 @@ var btndeletestu = function(e){
 }
 
 </script>
+
 
 

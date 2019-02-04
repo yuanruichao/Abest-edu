@@ -40,13 +40,19 @@ router.post('/newstu', function(req, res, next) {
 		division: req.body.division,
 		stuSource : req.body.stuSource,
 		aquireDate : req.body.aquireDate,
+		tarCountry : req.body.tarCountry,
 		tarSchType : req.body.tarSchType,
 		tarSchYear : req.body.tarSchYear,
 	});
+
+	var st = new ServiceTeam({
+		liuCheng: res.user.username
+	})
 	var s = new Student({
-		Name : req.body.Name,
+		name : req.body.Name,
 		stuInfo: si,
-		status: "unassigned"
+		serviceTeam: st,
+		status: "assigned"
 	});
 
 	console.log(res.user.username, "added new Stu:\n", s);
@@ -175,7 +181,7 @@ router.post('/completeevent', function(req, res, next) {
     				res.render("error", {message : "Update Error", error : err});
     			else {
     				console.log(res.user.username + " complete event " + req.body.stuId + " eventId: " + id);
-    				res.redirect('/user');
+    				res.redirect('/user/' + res.user.username);
 				}
 			});
 		})
@@ -354,7 +360,7 @@ router.post('/StuInfo', function(req, res, next) {
 		aquireDate : req.body.aquireDate,
 	});
 
-	Student.update({slug : req.body.slug}, {StuInfo: si}, function(err) {
+	Student.update({slug : req.body.slug}, {stuInfo: si}, function(err) {
 		if(err)
     		res.render("error", {message : "Update Error", error : err});
     	else {
@@ -444,8 +450,46 @@ router.post('/modifyisadmin', function(req, res, next) {
 	
 });
 
-
+router.get('/getmostrecentevent', function(req, res, next) {
+	console.log("within get /getmostrecentevent");
+	// console.log(req.body);
+	Student.findOne({'_id':req.query.stuid}, function(err, stu, count) {
+		if (err){
+			console.log(err);
+		}
+		if (stu == null) {
+			console.log("not found stu");
+			res.send('error')
+		}
+		else{
+			allEvents = stu.stuEvents;
+			allEvents.sort(function(a, b){return a.date - b.date});
+			if(allEvents[0]){
+				var eventDate = allEvents[0].date;
+				res.send([eventDate.Format("yyyy-MM-dd"),allEvents[0].memo]);
+			}
+			else{
+				res.send("")
+			}
+		}
+  	});
+	
+});
 module.exports = router;
 
-
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 

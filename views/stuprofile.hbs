@@ -97,11 +97,15 @@ h2 {
 				<p onclick = "$('#events').hide();$('#eventsDiv').show();" style = "display:none;text-align: center;" id = "events">Click to Show</p>
 				<p id = "eventsDiv">
 					{{#each obj.stuEvents}}
-					<p>
+					<p class = "eventsDivItem" date = '{{this.date}}'>
 						Date: {{this.date}}<br>
 						Memo: {{this.memo}}<br>
 					</p>
 					{{/each}}
+				</p>
+				<p id = "historyEventsDiv">
+					<hr />
+					<b>Compeleted Events:</b>
 					{{#each obj.historyEvents}}
 					<p>
 						Date: {{this.date}}<br>
@@ -128,9 +132,9 @@ h2 {
 					curSchool: <input value = "{{obj.stuInfo.curSchool}}" name="curSchool" type = "text"><br><br>
 					tel: <input value = "{{obj.stuInfo.tel}}" name="tel" type = "text"><br><br>
 					parName: <input value = "{{obj.stuInfo.parName}}" name="parName" type = "text"><br><br>
-					email: <input value = "{{obj.stuInfo.email}}" name="email" type = "text"><br><br>
+					email: <input value = "{{obj.stuInfo.email}}" name="email" type = "email"><br><br>
 					stuSource: <input value = "{{obj.stuInfo.stuSource}}" name="stuSource" type = "tel"><br><br>
-					tarCountry: <input value = "{{obj.stuInfo.tarCountry}}" name="tarCountry" type = "email"><br><br>
+					tarCountry: <input value = "{{obj.stuInfo.tarCountry}}" name="tarCountry" type = "text"><br><br>
 					tarSchType: <input value = "{{obj.stuInfo.tarSchType}}" name="tarSchType" type = "text"><br><br>
 					tarSchYear: <input value = "{{obj.stuInfo.tarSchYear}}" name="tarSchYear" type = "text"><br><br>
 					division: <input value = "{{obj.stuInfo.division}}" name="division" type = "text"><br><br>
@@ -264,7 +268,11 @@ $( document ).ready(function() {
     	$("#Declineform").hide()
 		$("#" + res + "form").show()
     })
-
+    var eventsDivItems = $('.eventsDivItem');
+    eventsDivItems.sort(function (a, b) {
+    	return Date.parse(b.getAttribute('date')) - Date.parse(a.getAttribute('date'))
+    });
+    eventsDivItems.detach().appendTo("#eventsDiv");
 });
 
 

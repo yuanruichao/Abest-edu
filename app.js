@@ -46,6 +46,7 @@ app.use('/js', express.static(__dirname + '/node_modules/popper.js/dist/umd/'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap-table/dist/extensions/editable')); // redirect bootstrap-table
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap-table/dist/')); // redirect bootstrap-table
+app.use('/js', express.static(__dirname + '/node_modules/handlebars/dist/')); // redirect handlebars
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap-table/dist')); // redirect CSS bootstrap
 app.use('/fonts', express.static(__dirname + '/node_modules/bootstrap/dist/fonts')); // redirect CSS bootstrap
